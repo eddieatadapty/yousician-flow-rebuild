@@ -1,0 +1,1814 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- flow-rebuild template (Growth Audit, v3: + walkthrough video, phone view/QR, localization, paywall today vs proposed). Replace every double-brace placeholder, everything between
+     the SCREENS markers, and the CONTENT json. Rules that brand-check.py enforces are marked RULE.
+     Reference builds: eddieatadapty.github.io/datacamp-flow-rebuild-v2 · bterzic123.github.io/planner5d-flow-rebuild-v2 -->
+<title>Yousician Growth Audit</title>
+<meta name="description" content="Five ideas to turn more Yousician users into subscribers, each built into a clickable version of Yousician's own onboarding. Prepared by Adapty.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- the APP's font (brand.json fonts, or the closest Google family) + a mono if the app shows code -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* BRAND:START — the only place the APP's colours are written as literals. RULE: every value here is
+   copied from brand.json / a sampled pixel of the app's own screens; never "improved". Used only inside the phone. */
+:root{
+  --b-primary:#00d296;               /* --color-main-green on yousician.com; Next button + highlighted words in the web sign-up */
+  --b-primary-ink:#0d2a1c;           /* --color-green-ink: text on green */
+  --b-bg:#1b1c1e;                    /* --color-grey-900; sign-up screen background */
+  --b-surface:#2e2f34;               /* answer rows (computed style) */
+  --b-ink:#ffffff;
+  --b-ink2:#8c919d;                  /* row subtitles (computed style) */
+  --b-line:#3c3d3f;                  /* timeline line / card borders (sampled) */
+  --b-link:#6bd4aa;                  /* "Skip to sign-up" link */
+  --b-accent2:#f6c863;               /* --color-main-yellow: stars, Today circle */
+  --b-purple:#6559f3;                /* --color-main-purple: RECOMMENDED tag */
+  --b-pink:#ec779d;                  /* Day 7 circle, bottom of the gradient */
+  --b-blue:#009ff9;                  /* note colours on the highway (site palette) */
+  --b-orange:#ee7d54;
+  --b-grad:linear-gradient(180deg,#f3b66f,#ec779d); /* Day 7 / Level up circle */
+  --b-radius:8px;                    /* answer rows, measured */
+  --b-pill:999px;                    /* Back / Next pills */
+  --b-font:'Inter',-apple-system,system-ui,sans-serif;
+  --b-mono:ui-monospace,monospace;
+}
+/* BRAND:END */
+/* A second app family (e.g. a mono for code) is applied HERE, never in SCREENS css (brand-check allows only
+   var(--b-font) there). Prefix with .scr so it beats the screens' font shorthands, e.g.:
+   .scr .code,.scr .instr code{font-family:var(--b-mono)} */
+
+/* ================= the audit page — Adapty's, not the app's. Light, Apple-style. ================= */
+:root{
+  color-scheme:light;
+  --st-ground:#f5f5f7; --st-card:#ffffff; --st-ink:#1d1d1f; --st-ink2:#6e6e73; --st-ink3:#86868b;
+  --st-hair:rgba(0,0,0,.09); --st-link:#0066cc;
+  --st-accent:#0d2a1c;      /* dark brand colour of the APP: buttons, the outcome band */
+  --st-hi:#00d296;          /* bright brand colour of the APP: outcome numbers on the band, idea dots */
+  --st-mark:rgba(0,210,150,.5); /* --st-hi at ~.5 alpha: the highlighter under impact numbers */
+  --st-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+html,body{margin:0}
+body{background:var(--st-ground);color:var(--st-ink);font-family:var(--st-font);-webkit-font-smoothing:antialiased;font-size:17px;line-height:1.47}
+.au-wrap{max-width:1080px;margin:0 auto;padding-inline:22px}
+a{color:var(--st-link)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--st-link);outline-offset:3px;border-radius:6px}
+mark{background:linear-gradient(transparent 62%,var(--st-mark) 62%,var(--st-mark) 92%,transparent 92%);color:inherit;padding:0 .04em}
+
+/* nav */
+.au-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(245,245,247,.8);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--st-hair)}
+.au-nav-in{max-width:1080px;margin:0 auto;padding-inline:22px;height:52px;display:flex;align-items:center;gap:26px}
+.au-brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.au-brand img{width:26px;height:26px;border-radius:7px;flex:none}
+.au-brand span{font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.au-brand small{font-size:15px;font-weight:400;color:var(--st-ink2)}
+.au-nav a{font-size:13px;color:var(--st-ink);text-decoration:none;opacity:.82}
+.au-nav a:hover{opacity:1}
+@media (max-width:560px){.au-nav a.au-opt{display:none}.au-brand small{display:none}}
+
+/* hero */
+.au-top-hero{text-align:center;padding-top:clamp(56px,9vw,96px);overflow:hidden;position:relative}
+.au-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--st-ink);margin:0 0 14px}
+.au-eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-display{font-size:clamp(60px,12vw,120px);line-height:.98;font-weight:700;letter-spacing:-.05em;margin:0}
+.au-lede{font-size:clamp(23px,3.4vw,34px);line-height:1.16;font-weight:600;letter-spacing:-.022em;max-width:760px;margin:22px auto 0;text-wrap:balance}
+.au-lede span{color:var(--st-ink2)}
+.au-byline{font-size:14px;color:var(--st-ink3);margin:18px 0 0}
+.au-ctas{display:flex;gap:26px;justify-content:center;align-items:center;margin-top:30px;flex-wrap:wrap}
+.au-btn{display:inline-block;background:var(--st-accent);color:#fff;border-radius:980px;padding:12px 23px;font-size:17px;font-weight:500;text-decoration:none;border:0;cursor:pointer}
+.au-btn:hover{filter:brightness(1.25)}
+.au-lnk{background:none;border:0;padding:0;color:var(--st-link);font-size:17px;text-decoration:none;cursor:pointer}
+.au-lnk::after{content:"\00a0›"}
+.au-lnk:hover{text-decoration:underline}
+.au-phones{display:flex;justify-content:center;align-items:flex-start;margin-top:clamp(40px,6vw,64px);height:clamp(300px,52vw,560px)}
+.au-hp{flex:none;border:0;padding:0;background:none;cursor:pointer;width:27%;max-width:290px;margin:0 -2.5%;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.au-hp img{display:block;width:100%;height:auto;filter:drop-shadow(0 28px 50px rgba(0,0,0,.2))}
+.au-hp.au-c{width:31%;max-width:330px;z-index:2}
+.au-hp.au-l{transform:translateY(12%) rotate(-5deg)}
+.au-hp.au-r{transform:translateY(12%) rotate(5deg)}
+.au-hp.au-l:hover{transform:translateY(9%) rotate(-5deg)}.au-hp.au-r:hover{transform:translateY(9%) rotate(5deg)}.au-hp.au-c:hover{transform:translateY(-3%)}
+
+/* sections */
+.au-sec{padding-block:clamp(72px,10vw,120px)}
+.au-sec.au-white{background:var(--st-card)}
+.au-kicker{font-size:15px;font-weight:600;color:var(--st-ink2);margin:0 0 12px}
+.au-h2{font-size:clamp(34px,5.2vw,56px);line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:0;text-wrap:balance}
+.au-h2 span{color:var(--st-ink3)}
+.au-split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,6vw,80px);align-items:end}
+.au-split p{margin:0;font-size:clamp(17px,1.7vw,21px);line-height:1.45;color:var(--st-ink2);letter-spacing:-.01em}
+.au-split p b{color:var(--st-ink);font-weight:600}
+.au-split p + p{margin-top:16px}
+.au-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(48px,7vw,80px);border-top:1px solid var(--st-hair)}
+.au-stat{padding:28px 20px 0 0}
+.au-stat b{display:block;font-size:clamp(40px,5.5vw,64px);font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.au-stat span{display:block;font-size:15px;color:var(--st-ink2);margin-top:10px;max-width:22ch}
+.au-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);margin-top:clamp(48px,7vw,72px)}
+.au-note h3{font-size:19px;font-weight:600;letter-spacing:-.015em;margin:0 0 8px}
+.au-note p{margin:0;font-size:15.5px;line-height:1.5;color:var(--st-ink2)}
+.au-note .au-ic{width:36px;height:36px;border-radius:10px;background:var(--st-ground);display:grid;place-items:center;margin-bottom:16px}
+.au-note .au-ic svg{width:19px;height:19px;stroke:var(--st-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ideas */
+.au-ideas-h{margin-bottom:clamp(32px,5vw,48px)}
+.au-list{background:var(--st-card);border-radius:28px;padding-inline:clamp(20px,4vw,44px)}
+.au-idea{display:grid;grid-template-columns:56px 1fr 220px;gap:20px;align-items:start;padding-block:clamp(26px,3.5vw,36px);border-top:1px solid var(--st-hair)}
+.au-idea:first-child{border-top:0}
+.au-idea .au-num{font-size:15px;font-weight:600;color:var(--st-ink3);font-variant-numeric:tabular-nums;padding-top:6px}
+.au-idea h3{font-size:clamp(21px,2.4vw,26px);line-height:1.2;font-weight:600;letter-spacing:-.022em;margin:0 0 8px}
+.au-idea p{margin:0 0 12px;font-size:17px;line-height:1.5;color:var(--st-ink2);max-width:58ch}
+.au-idea p code{font:600 15px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--st-ink);background:var(--st-ground);padding:2px 7px;border-radius:6px}
+.au-idea .au-lnk{font-size:15px}
+.au-imp{text-align:right}
+.au-imp .au-v{font-size:clamp(30px,3.6vw,40px);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums;color:var(--st-accent)}
+.au-imp .au-l{font-size:13.5px;color:var(--st-ink2);margin-top:8px}
+.au-band{margin-top:20px;background:var(--st-accent);color:#fff;border-radius:28px;padding:clamp(32px,5vw,56px);display:grid;grid-template-columns:1fr auto;gap:clamp(28px,5vw,64px);align-items:center}
+.au-band .au-k{font-size:15px;font-weight:600;color:rgba(255,255,255,.62);margin:0 0 10px}
+.au-band h3{font-size:clamp(24px,3vw,32px);line-height:1.18;font-weight:600;letter-spacing:-.022em;margin:0;text-wrap:balance}
+.au-band .au-fn{font-size:13px;line-height:1.5;color:rgba(255,255,255,.55);margin:16px 0 0;max-width:52ch}
+.au-nums{display:flex;gap:clamp(28px,4vw,48px)}
+.au-nums small{display:block;font-size:13px;color:rgba(255,255,255,.62)}
+.au-nums b{display:block;font-size:clamp(48px,6.5vw,76px);font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-hi);font-variant-numeric:tabular-nums;margin:4px 0 8px}
+.au-nums span{font-size:14px;color:rgba(255,255,255,.8)}
+.au-band .au-btn{background:var(--st-hi);color:var(--st-accent);font-weight:600;margin-top:26px}
+
+/* prototype */
+.au-proto-h{text-align:center;max-width:720px;margin:0 auto}
+.au-proto-h p{font-size:clamp(17px,1.7vw,21px);color:var(--st-ink2);margin:14px 0 0}
+.au-seg{display:flex;gap:4px;justify-content:center;margin:clamp(28px,4vw,40px) auto 0;padding:4px;background:var(--st-ground);border-radius:980px;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.au-seg::-webkit-scrollbar{display:none}
+.au-chip{flex:none;display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--st-ink2);font-size:13.5px;font-weight:500;padding:8px 14px;border-radius:980px;cursor:pointer;white-space:nowrap}
+.au-chip:hover{color:var(--st-ink)}
+.au-chip.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.au-chip i{font-style:normal;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--st-hi);color:var(--st-accent)}
+.au-stage{display:grid;grid-template-columns:auto minmax(0,420px);gap:clamp(32px,6vw,72px);justify-content:center;align-items:center;margin-top:clamp(28px,4vw,44px)}
+.phone{width:390px;height:844px;border-radius:56px;padding:10px;background:#0b0d10;box-shadow:0 0 0 1.5px #3a3d42,0 40px 90px rgba(0,0,0,.25);max-width:calc(100vw - 44px)}
+.phone-in{position:relative;width:100%;height:100%;border-radius:46px;overflow:hidden;background:var(--b-bg)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#000;z-index:9}
+.sbar{position:absolute;top:0;left:0;right:0;height:52px;display:flex;justify-content:space-between;align-items:center;padding:4px 32px 0;font:600 15px -apple-system,system-ui,sans-serif;color:var(--b-ink);z-index:8;pointer-events:none}
+.au-pn{background:var(--st-ground);border-radius:28px;padding:clamp(26px,3.5vw,38px)}
+.au-pn-k{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--st-ink)}
+.au-pn-k i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-pn-k.au-ctx{color:var(--st-ink2)}.au-pn-k.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-pn-t{font-size:clamp(24px,2.6vw,30px);line-height:1.12;font-weight:700;letter-spacing:-.028em;margin:10px 0 14px;text-wrap:balance}
+.au-pn-h{margin:0;font-size:17px;line-height:1.55;color:var(--st-ink2)}
+.au-pn-h b{color:var(--st-ink);font-weight:600}
+.au-pn-o{margin-top:24px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-pn-o .au-lab{font-size:13px;font-weight:600;color:var(--st-ink3)}
+.au-pn-o .au-val{font-size:clamp(38px,4.4vw,50px);font-weight:700;letter-spacing:-.04em;line-height:1.05;color:var(--st-accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.au-pn-o .au-sub{font-size:14px;color:var(--st-ink2);margin-top:4px}
+.au-pn-a{margin:18px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-pn-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid var(--st-hair);font-size:13px;color:var(--st-ink3)}
+.au-pn-nav button{background:var(--st-card);border:0;border-radius:980px;padding:8px 15px;font-size:14px;font-weight:500;color:var(--st-ink);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.au-pn-nav button:disabled{opacity:.35;cursor:default}
+.au-hint{text-align:center;font-size:14px;color:var(--st-ink3);margin:22px 0 0}
+
+/* footer */
+.au-foot{padding-block:56px 72px;border-top:1px solid var(--st-hair)}
+.au-foot details{border-bottom:1px solid var(--st-hair);padding-bottom:18px}
+.au-foot summary{cursor:pointer;font-size:17px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.au-foot summary::-webkit-details-marker{display:none}
+.au-foot summary::after{content:"+";font-size:24px;font-weight:300;color:var(--st-ink2)}
+.au-foot details[open] summary::after{content:"−"}
+.au-srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 48px;margin-top:18px}
+.au-srcs h4{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--st-ink3);margin:18px 0 6px}
+.au-srcs dl{margin:0}.au-srcs dt{font-size:14.5px;font-weight:600;margin-top:10px}
+.au-srcs dd{margin:3px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-fine{font-size:12.5px;line-height:1.6;color:var(--st-ink3);margin:22px 0 0;max-width:80ch}
+.au-cta-line{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:36px}
+.au-cta-line p{margin:0;font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-.02em;max-width:34ch}
+
+@media (max-width:900px){
+  .au-split,.au-band{grid-template-columns:1fr}
+  .au-notes{grid-template-columns:1fr}
+  .au-idea{grid-template-columns:40px 1fr}
+  .au-imp{grid-column:2;text-align:left;display:flex;align-items:baseline;gap:10px}
+  .au-imp .au-l{margin:0}
+  .au-imp .au-v{white-space:nowrap}
+  .au-stage{grid-template-columns:1fr;justify-items:center}
+  .au-pn{width:100%;max-width:520px}
+  .au-srcs{grid-template-columns:1fr}
+}
+@media (max-width:560px){.au-stats{grid-template-columns:1fr}.au-stat{padding:22px 0 0}.au-nums{flex-direction:column;gap:18px}}
+
+/* ================= extras (audit side): video, language, phone view + QR, paywall today vs proposed, ?tour ================= */
+[hidden]{display:none!important}
+/* the device never scrolls: off-screen slides would otherwise make it scrollable by focus / scrollIntoView */
+.phone-in,.scr{overflow:clip}
+/* hero: walkthrough link */
+.au-play::before{content:"▶";font-size:.72em;margin-right:7px;position:relative;top:-1px}
+/* video dialog */
+.au-vid{border:0;padding:0;background:transparent;max-width:min(1120px,94vw);width:100%;overflow:visible}
+.au-vid::backdrop{background:rgba(0,0,0,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.au-vid-in{background:#000;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.au-vid video{display:block;width:100%;aspect-ratio:16/9;background:#000}
+.au-vid-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 4px 0;font-size:14px}
+.au-vid-bar a{color:#fff;opacity:.85}
+.au-vid-x{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:980px;padding:8px 16px;font-size:14px;cursor:pointer}
+/* language switch */
+.au-langrow{display:flex;justify-content:center;align-items:center;gap:12px;margin:18px 0 0;font-size:13.5px;color:var(--st-ink2);flex-wrap:wrap}
+.au-lsw{display:inline-flex;gap:2px;padding:3px;background:var(--st-ground);border-radius:980px}
+.au-lsw button{border:0;background:none;padding:6px 13px;border-radius:980px;font-size:13.5px;font-weight:500;color:var(--st-ink2);cursor:pointer;white-space:nowrap}
+.au-lsw button.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* QR card (desktop) / full-screen button (phone) */
+.au-qr{display:flex;align-items:center;gap:18px;margin:26px auto 0;max-width:500px;background:var(--st-ground);border-radius:22px;padding:14px 22px 14px 14px}
+.au-qr img{width:112px;height:112px;border-radius:12px;image-rendering:pixelated;flex:none;background:#fff}
+.au-qr b{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.au-qr p{margin:4px 0 0;font-size:14.5px;line-height:1.45;color:var(--st-ink2)}
+.au-mobw{display:none;text-align:center;margin-top:22px}
+@media (max-width:900px){.au-qr{display:none}.au-mobw{display:block}}
+/* paywall: today vs proposed */
+.au-cmp{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr) minmax(0,290px);gap:clamp(24px,4vw,52px);align-items:center;margin-top:clamp(32px,5vw,52px)}
+.au-cmp figure{margin:0;text-align:center}
+.au-cmp figure img{display:block;width:100%;height:auto;filter:drop-shadow(0 24px 44px rgba(0,0,0,.18))}
+.au-cmp figcaption{margin-top:14px;font-size:15px;font-weight:600}
+.au-cmp figcaption span{color:var(--st-ink2);font-weight:400}
+.au-cmp-go{border:0;padding:0;background:none;cursor:pointer;display:block;width:100%;transition:transform .3s}
+.au-cmp-go:hover{transform:translateY(-4px)}
+.au-chg{list-style:none;margin:0;background:var(--st-card);border-radius:24px;padding:4px clamp(18px,2.4vw,28px)}
+.au-chg li{padding:15px 0;border-top:1px solid var(--st-hair)}
+.au-chg li:first-child{border-top:0}
+.au-chg h4{margin:0 0 7px;font-size:16px;font-weight:600;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.au-chg h4 i{font-style:normal;font-size:12px;font-weight:600;color:var(--st-accent);background:var(--st-mark);border-radius:6px;padding:2px 8px;white-space:nowrap}
+.au-was,.au-now{display:grid;grid-template-columns:78px 1fr;gap:8px;font-size:14.5px;line-height:1.42}
+.au-was{color:var(--st-ink3)}
+.au-now{color:var(--st-ink);margin-top:3px}
+.au-was em,.au-now em{font-style:normal;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+.au-now em{color:var(--st-link)}
+.au-kept{margin:22px 0 0;font-size:14px;color:var(--st-ink2);text-align:center}
+@media (max-width:900px){.au-cmp{grid-template-columns:1fr 1fr;gap:18px}.au-chg{grid-column:1 / -1;order:3}.au-was,.au-now{grid-template-columns:70px 1fr}}
+
+/* ?app — the prototype full screen on a real phone, with a bar that opens the idea panel */
+html.appmode,html.appmode body{height:100%;overflow:hidden;background:#000}
+html.appmode .au-nav,html.appmode .au-top-hero,html.appmode #why,html.appmode #ideas,html.appmode #compare,html.appmode .au-foot,
+html.appmode .au-proto-h,html.appmode #prototype .au-langrow,html.appmode #chips,html.appmode .au-hint,html.appmode .au-qr,html.appmode .au-mobw{display:none!important}
+html.appmode #prototype{padding:0;background:#000}
+html.appmode #prototype .au-wrap{padding:0;max-width:none}
+html.appmode .au-stage{display:block;margin:0}
+html.appmode .phone{position:fixed;top:0;left:0;right:0;margin:0 auto;width:min(100%,480px);height:calc(100% - 56px - env(safe-area-inset-bottom,0px));max-width:none;border-radius:0;padding:0;box-shadow:none;background:#000}
+html.appmode .phone-in{border-radius:0}
+html.appmode .island,html.appmode .sbar{display:none}
+html.appmode .scr .s-pad{padding-top:max(58px,calc(env(safe-area-inset-top,0px) + 16px))}
+html.appmode .scr .s-x,html.appmode .scr .s-lang{top:max(54px,calc(env(safe-area-inset-top,0px) + 10px))}
+.au-appbar,.au-scrim{display:none}
+html.appmode .au-appbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;height:calc(56px + env(safe-area-inset-bottom,0px));padding:0 12px env(safe-area-inset-bottom,0px) 16px;align-items:center;gap:12px;background:#0b0b0c;border-top:1px solid rgba(255,255,255,.1);color:#fff}
+.au-ab-why{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:none;border:0;color:#fff;font-size:14px;font-weight:500;text-align:left;cursor:pointer;padding:0}
+.au-ab-why i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);flex:none}
+.au-ab-why span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.au-ab-why em{font-style:normal;color:rgba(255,255,255,.6);margin-left:auto;flex:none;font-size:13px}
+.au-appbar .au-lsw{background:rgba(255,255,255,.12)}
+.au-appbar .au-lsw button{color:rgba(255,255,255,.75);padding:5px 11px}
+.au-appbar .au-lsw button.on{background:#fff;color:#000}
+html.appmode #panel{position:fixed;left:0;right:0;bottom:0;z-index:80;max-width:none;width:auto;margin:0 auto;border-radius:24px 24px 0 0;max-height:78%;overflow:auto;transform:translateY(105%);transition:transform .3s cubic-bezier(.3,.7,.2,1);padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}
+html.appmode.au-open #panel{transform:none}
+html.appmode.au-open .au-scrim{display:block;position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.5)}
+
+/* ?tour — 1280×720 walkthrough frames (record-video.sh renders them into assets/walkthrough.mp4) */
+.au-tour{display:none}
+html.tourmode,html.tourmode body{overflow:hidden;background:var(--st-ground)}
+html.tourmode body *{visibility:hidden}
+html.tourmode .phone,html.tourmode .phone *,html.tourmode .au-tour,html.tourmode .au-tour *{visibility:visible}
+html.tourmode .phone{position:fixed;left:170px;top:44px;margin:0;transform:scale(.755);transform-origin:0 0;box-shadow:0 0 0 1.5px #3a3d42,0 34px 80px rgba(0,0,0,.22);z-index:5;max-width:none}
+html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-events:none;color:var(--st-ink)}
+.au-tb{position:absolute;left:590px;top:30px;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.au-tb img{width:26px;height:26px;border-radius:7px}
+.au-tb small{font-size:16px;font-weight:400;color:var(--st-ink2)}
+.au-tby{position:absolute;right:48px;top:32px;font-size:14px;color:var(--st-ink3)}
+.au-tcap{position:absolute;left:590px;right:60px;top:50%;transform:translateY(-50%)}
+.au-tk{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:600}
+.au-tk i{width:9px;height:9px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-tk.au-ctx{color:var(--st-ink2)}.au-tk.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-tt{font-size:46px;line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:14px 0 14px;text-wrap:balance}
+.au-tl{font-size:23px;line-height:1.36;color:var(--st-ink2);letter-spacing:-.01em;margin:0;max-width:28ch}
+.au-to{margin-top:28px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-to small{display:block;font-size:14px;font-weight:600;color:var(--st-ink3)}
+.au-to b{display:inline-block;font-size:62px;font-weight:700;letter-spacing:-.045em;line-height:1.08;color:var(--st-accent);margin-top:4px}
+.au-to span{display:block;font-size:16px;color:var(--st-ink2);margin-top:2px}
+.au-tprog{position:absolute;left:48px;right:48px;bottom:22px;height:4px;border-radius:3px;background:var(--st-hair);overflow:hidden}
+.au-tprog i{display:block;height:100%;background:var(--st-hi)}
+.au-ttap{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 2.5px rgba(255,255,255,.9),0 6px 16px rgba(0,0,0,.35);opacity:0}
+.au-tintro,.au-tend{position:absolute;inset:0;background:var(--st-ground);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
+.au-tintro .au-lede{margin-top:18px}
+.au-te-h{font-size:46px;line-height:1.08;font-weight:700;letter-spacing:-.035em;margin:0;max-width:18ch;text-wrap:balance}
+.au-te-n{display:flex;gap:64px;margin-top:30px}
+.au-te-n small{display:block;font-size:14px;color:var(--st-ink2)}
+.au-te-n b{display:block;font-size:76px;font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-accent);margin:4px 0 6px}
+.au-te-n span{font-size:15px;color:var(--st-ink2)}
+.au-te-q{display:flex;align-items:center;gap:18px;margin-top:34px;background:var(--st-card);border-radius:20px;padding:12px 24px 12px 12px;text-align:left}
+.au-te-q img{width:104px;height:104px;border-radius:10px;image-rendering:pixelated}
+.au-te-q b{display:block;font-size:18px;font-weight:600}
+.au-te-q span{display:block;font-size:15px;color:var(--st-link);margin-top:3px}
+.au-te-f{position:absolute;bottom:44px;left:0;right:0;font-size:13px;color:var(--st-ink3);margin:0}
+
+/* ---------- screen engine (layout only, no colours) ---------- */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--b-bg);color:var(--b-ink);font-family:var(--b-font);
+     transform:translateX(100%);transition:transform .32s cubic-bezier(.3,.7,.2,1);overflow:hidden;text-align:left;line-height:normal;font-size:16px}
+.scr.is-active{transform:none;z-index:2}.scr.is-past{transform:translateX(-28%)}.scr.under{transform:none;z-index:1}
+.scr.sheet{transform:translateY(100%)}.scr.sheet.is-active{transform:none}
+.nofx,.nofx *{transition:none!important}
+.shot .scr{transition:none!important}
+/* ?phone — just the device at (10,10), for shoot.sh and hero-stills.sh (&clear = transparent ground) */
+.phoneonly body{background:#141615}
+.phoneonly.clear body{background:transparent}
+.phoneonly body *{visibility:hidden}
+.phoneonly .phone,.phoneonly .phone *{visibility:visible}
+.phoneonly .phone{position:fixed;top:10px;left:10px;z-index:99;box-shadow:none;max-width:none;margin:0}
+
+/* SCREENS:START — styles for the app's screens. RULE: colours only via var(--b-*), or white/black
+   with alpha (scrims, shadows). RULE: no class name that the audit page above already uses
+   (.hero .btn .chip .list .idea .note .stat .band .num .hint .display .split …) — brand-check refuses collisions. */
+.y-b{flex:1;display:flex;flex-direction:column;align-items:center;padding:54px 22px 18px;position:relative;z-index:1;min-height:0;text-align:center}
+.y-logo{position:absolute;top:50px;left:18px;width:19px;height:28px;color:var(--b-primary);fill:currentColor}
+.y-h{font:700 26px/1.18 var(--b-font);letter-spacing:-.01em;margin:54px 0 0;color:var(--b-ink)}
+.y-g{color:var(--b-primary)}
+.y-s{font:400 15px/1.4 var(--b-font);color:var(--b-ink);margin:8px 0 0}
+.y-foot{margin-top:auto;width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:12px;background:linear-gradient(0deg,var(--b-bg) 70%,transparent)}
+.y-nav{display:flex;gap:14px;justify-content:center}
+.y-bk,.y-nx{display:inline-flex;align-items:center;gap:8px;border-radius:var(--b-pill);font:500 16px var(--b-font);padding:0 22px;height:46px;cursor:pointer}
+.y-bk{background:none;border:1.5px solid var(--b-ink);color:var(--b-primary)}
+.y-nx{background:var(--b-primary);border:0;color:var(--b-primary-ink)}
+.y-nx:disabled{opacity:.35;cursor:default}
+.y-bk svg,.y-nx svg{flex:none;width:9px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+.y-steps{display:flex;align-items:center;gap:10px;font:400 13px var(--b-font);color:var(--b-ink)}
+.y-steps i{display:block;width:6px;height:6px;border-radius:50%;background:var(--b-ink)}
+.y-steps i.y-d{background:var(--b-primary)}
+.y-steps i.y-c{width:18px;height:18px;background:var(--b-primary)}
+.y-skip{font:400 13px var(--b-font);color:var(--b-link)}
+/* instrument */
+.y-ins{display:flex;flex-wrap:wrap;justify-content:center;gap:18px 14px;margin-top:40px;padding:0 6px}
+.y-in{background:none;border:0;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;width:86px;color:var(--b-ink);font:400 15px var(--b-font)}
+.y-in img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid transparent}
+.y-in.on img{border-color:var(--b-primary)}
+/* rows */
+.y-rows{display:flex;flex-direction:column;gap:14px;width:100%;margin-top:34px}
+.y-row{position:relative;display:flex;flex-direction:column;gap:3px;background:var(--b-surface);border:1.5px solid var(--b-bg);border-radius:var(--b-radius);padding:15px 20px;text-align:left;cursor:pointer;color:var(--b-ink);font:400 16px var(--b-font);width:100%}
+.y-row small{font:400 12.5px var(--b-font);color:var(--b-ink2)}
+.y-row.on{border-color:var(--b-primary)}
+.y-rec{position:absolute;top:-10px;right:12px;background:var(--b-purple);color:var(--b-ink);font:500 10.5px var(--b-font);padding:3px 7px;border-radius:5px}
+/* genres */
+.y-scroll{flex:1;min-height:0;overflow:auto;width:100%;scrollbar-width:none;margin-top:6px}
+.y-gen{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 6px;padding:18px 4px 10px}
+.y-ge{position:relative;background:none;border:0;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px;color:var(--b-ink);font:400 14px/1.2 var(--b-font)}
+.y-ge img{width:76px;height:76px;border-radius:50%;object-fit:cover;border:3px solid transparent;opacity:.62}
+.y-ge.on img{border-color:var(--b-primary);opacity:1}
+.y-ge b{position:absolute;top:52px;left:calc(50% + 18px);width:22px;height:22px;border-radius:50%;background:var(--b-bg);display:grid;place-items:center}
+.y-ge.on b{background:var(--b-primary)}
+.y-ge b svg{width:12px;height:12px;stroke:var(--b-bg);stroke-width:2.6;fill:none;opacity:0}
+.y-ge.on b svg{opacity:1}
+/* payoff: Great choice + your path */
+.y-path{width:100%;margin-top:22px;background:var(--b-surface);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center;text-align:left}
+.y-path img{width:58px;height:58px;border-radius:50%;object-fit:cover;flex:none;border:2px solid var(--b-primary)}
+.y-path p{margin:0;font:600 15px/1.3 var(--b-font)}
+.y-path small{display:block;font:400 12px var(--b-font);color:var(--b-ink2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.y-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.y-tags span{font:500 12px var(--b-font);color:var(--b-primary);border:1px solid var(--b-primary);border-radius:var(--b-pill);padding:3px 9px}
+.y-curve{position:relative;width:100%;height:150px;margin-top:16px}
+.y-curve>svg{position:absolute;inset:0;width:100%;height:100%}
+.y-c1,.y-c2{position:absolute;display:flex;flex-direction:column;align-items:center;font:400 13px/1.3 var(--b-font)}
+.y-c1{left:0;top:62px;width:130px}.y-c2{right:0;top:2px;width:120px}
+.y-c1 i,.y-c2 i{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;margin-bottom:6px}
+.y-c1 i{border:2px solid var(--b-accent2)}.y-c2 i{background:var(--b-grad)}
+.y-c1 svg,.y-c2 svg{width:18px;height:18px;stroke:var(--b-ink);fill:none;stroke-width:1.8}
+.y-c1 b,.y-c2 b{font-weight:700;font-size:12px;letter-spacing:.02em}
+.y-stars{color:var(--b-accent2);font-size:17px;letter-spacing:3px;margin-top:10px}
+.y-q{font:400 14px/1.45 var(--b-font);margin:6px 0 0;color:var(--b-ink)}
+/* quick win: note highway */
+.y-hw{position:relative;width:100%;height:240px;margin-top:24px;background:var(--b-bg);border:1px solid var(--b-line);border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.y-hw .y-str{position:absolute;left:0;right:0;height:2px;background:rgba(255,255,255,.55)}
+.y-hw .y-str:nth-child(1){top:88px}.y-hw .y-str:nth-child(2){top:118px}.y-hw .y-str:nth-child(3){top:178px;background:var(--b-accent2);opacity:.75}.y-hw .y-str:nth-child(4){top:208px;background:var(--b-accent2);opacity:.75}
+.y-hit{position:absolute;left:64px;top:60px;bottom:14px;width:2px;background:rgba(255,255,255,.8)}
+.y-mult{position:absolute;left:12px;top:10px;font:600 13px var(--b-font);color:var(--b-ink)}
+.y-arc{position:absolute;inset:0;width:100%;height:100%}
+.y-arc path{fill:none;stroke:rgba(255,255,255,.55);stroke-width:2.2;stroke-dasharray:1 6;stroke-linecap:round}
+.y-nt{position:absolute;height:24px;min-width:38px;border-radius:12px;font:700 13px/24px var(--b-font);color:var(--b-ink);text-align:center}
+.y-nt.g{background:var(--b-primary);color:var(--b-primary-ink)}.y-nt.b{background:var(--b-blue)}.y-nt.o{background:var(--b-orange)}.y-nt.p{background:var(--b-purple)}
+.y-ball{position:absolute;left:55px;top:142px;width:18px;height:18px;border-radius:50%;background:var(--b-ink);box-shadow:0 0 14px rgba(255,255,255,.7)}
+.y-perf{position:absolute;left:0;right:0;top:22px;text-align:center;font:800 32px var(--b-font);color:var(--b-ink);text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.y-mic{display:flex;align-items:center;gap:8px;margin-top:16px;font:500 13px var(--b-font);color:var(--b-ink2)}
+.y-mic i{display:flex;gap:3px;align-items:flex-end;height:16px}
+.y-mic i b{display:block;width:3px;border-radius:2px;background:var(--b-primary)}
+.y-won{width:100%;margin-top:16px;background:var(--b-surface);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;text-align:left;font:400 14px/1.35 var(--b-font)}
+.y-won b{color:var(--b-accent2);font-size:22px}
+.y-big{width:100%;height:50px;border:0;border-radius:var(--b-pill);background:var(--b-primary);color:var(--b-primary-ink);font:600 16px var(--b-font);cursor:pointer}
+.y-ghost{background:none;border:0;color:var(--b-link);font:400 13px var(--b-font);cursor:pointer;padding:4px}
+/* trial timeline (theirs) */
+.y-tl{width:100%;margin-top:30px;display:flex;flex-direction:column;text-align:left}
+.y-ts{display:flex;gap:16px;position:relative;padding-bottom:22px}
+.y-ts:not(:last-child)::before{content:"";position:absolute;left:19px;top:40px;bottom:0;width:2px;background:var(--b-accent2)}
+.y-ts i{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--b-accent2)}
+.y-ts:nth-child(2) i{border-color:var(--b-pink)}
+.y-ts:last-child i{border:0;background:var(--b-grad)}
+.y-ts svg{width:18px;height:18px;stroke:var(--b-ink);fill:none;stroke-width:1.8}
+.y-ts:last-child svg{stroke:var(--b-bg)}
+.y-ts p{margin:0;font:400 14.5px/1.4 var(--b-font)}
+.y-ts b{display:block;font:700 15px var(--b-font);margin-bottom:2px}
+.y-proof{width:100%;margin-top:4px;border-top:1px solid var(--b-line);padding-top:14px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.y-proof img{width:150px;height:auto}
+.y-rate{font:600 14px var(--b-font)}.y-rate span{color:var(--b-accent2);letter-spacing:2px}
+.y-rate small{font-weight:400;color:var(--b-ink2)}
+.y-press{font:400 13px/1.4 var(--b-font);color:var(--b-ink);margin:2px 0 0}.y-press em{display:block;font-style:normal;color:var(--b-ink2);font-size:12px;margin-top:2px}
+/* paywall */
+.y-x{position:absolute;top:50px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);border:0;color:var(--b-ink2);font:400 15px var(--b-font);cursor:pointer;z-index:3}
+.y-pw{padding-top:50px}
+.y-pw .y-h{margin-top:12px;font-size:25px}
+.y-heroc{position:relative;width:100%;height:118px;margin-top:22px;flex:none}
+.y-heroc img{position:absolute;border-radius:50%;object-fit:cover}
+.y-hi{left:50%;top:0;width:116px;height:116px;margin-left:-58px;border:3px solid var(--b-primary);z-index:2}
+.y-hg1,.y-hg2{top:30px;width:74px;height:74px;border:3px solid var(--b-bg)}
+.y-hg1{left:50%;margin-left:-128px}.y-hg2{left:50%;margin-left:54px}
+.y-pr{display:flex;align-items:center;gap:8px;margin-top:10px;font:500 13px var(--b-font);color:var(--b-ink)}
+.y-pr span{color:var(--b-accent2);letter-spacing:1px}.y-pr small{color:var(--b-ink2);font-size:13px}
+.y-ben{list-style:none;padding:0;margin:16px 0 0;width:100%;display:flex;flex-direction:column;gap:8px;text-align:left}
+.y-ben li{display:flex;gap:10px;align-items:center;font:400 14.5px/1.3 var(--b-font)}
+.y-ben svg{flex:none;width:18px;height:18px;stroke:var(--b-primary);fill:none;stroke-width:2.4}
+.y-plans{display:flex;flex-direction:column;gap:10px;width:100%;margin-top:auto;padding-top:14px}
+.y-tm{width:100%;margin-top:14px;background:var(--b-surface);border-radius:12px;padding:10px 14px;text-align:left}
+.y-tm>span{color:var(--b-accent2);font-size:12px;letter-spacing:2px}
+.y-tm p{margin:2px 0 0;font:400 13px/1.4 var(--b-font);color:var(--b-ink)}
+.y-pl{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--b-surface);border:2px solid var(--b-surface);border-radius:12px;padding:13px 16px;color:var(--b-ink);cursor:pointer;text-align:left;font-family:var(--b-font);width:100%}
+.y-pl.on{border-color:var(--b-primary)}
+.y-pl b{display:block;font:600 16px var(--b-font)}
+.y-pl small{display:block;font:400 12.5px var(--b-font);color:var(--b-ink2);margin-top:2px}
+.y-pl .y-pm{text-align:right;font:700 18px var(--b-font);white-space:nowrap}
+.y-pl .y-pm small{font-weight:400;white-space:nowrap}
+.y-save{position:absolute;top:-10px;left:14px;background:var(--b-accent2);color:var(--b-bg);font:700 10.5px var(--b-font);padding:3px 8px;border-radius:5px;letter-spacing:.03em;white-space:nowrap}
+.y-free{color:var(--b-primary)!important}
+.y-terms{font:400 11.5px/1.4 var(--b-font);color:var(--b-ink2);margin:8px 0 0}
+.y-legal{display:flex;gap:16px;justify-content:center;font:400 11px var(--b-font);color:var(--b-ink2);margin-top:6px}
+/* offer sheet */
+.y-sheet{position:absolute;left:0;right:0;bottom:0;top:120px;background:var(--b-surface);border-radius:22px 22px 0 0;display:flex;flex-direction:column;align-items:center;padding:14px 22px 22px;text-align:center}
+.y-grab{width:40px;height:5px;border-radius:3px;background:rgba(255,255,255,.25)}
+.y-of-img{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--b-primary);margin-top:22px}
+.y-sheet .y-h{margin-top:14px;font-size:24px}
+.y-of-price{margin-top:16px;font:800 34px var(--b-font)}
+.y-of-price small{display:block;font:400 14px var(--b-font);color:var(--b-ink2);margin-top:2px}
+.y-cmp{width:100%;margin-top:16px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.y-cmp li{display:flex;gap:10px;align-items:center;font:400 14px/1.35 var(--b-font);list-style:none}
+.y-cmp svg{flex:none;width:18px;height:18px;fill:none;stroke-width:2.4;stroke:var(--b-primary)}
+.y-cmp .y-no{color:var(--b-ink2)}.y-cmp .y-no svg{stroke:var(--b-ink2)}
+.y-sheet .y-foot{background:none}
+.y-sheet .y-x{top:14px}
+.y-pw .y-foot{margin-top:14px}
+/* SCREENS:END */
+</style>
+</head>
+<body>
+
+<nav class="au-nav" aria-label="Sections">
+  <div class="au-nav-in">
+    <div class="au-brand">
+      <img src="assets/brand/appstore-icon.jpg" alt="">
+      <span>Growth Audit <small>· Yousician</small></span>
+    </div>
+    <a class="au-opt" href="#why">Why this</a>
+    <a href="#ideas">Five ideas</a>
+    <a href="#prototype">Prototype</a>
+    <a class="au-opt" href="#compare" id="navCompare" hidden>Paywall</a>
+  </div>
+</nav>
+
+<header class="au-top-hero" id="top">
+  <div class="au-wrap">
+    <p class="au-eyebrow"><i></i>Growth Audit · October 2026</p>
+    <h1 class="au-display">Yousician</h1>
+    <p class="au-lede">Five ideas to turn more new players into subscribers. <span>Each one built into your own onboarding, so you can tap through it.</span></p>
+    <p class="au-byline">Prepared by Adapty for the Yousician team</p>
+    <div class="au-ctas">
+      <a class="au-btn" href="#ideas">See the five ideas</a>
+      <a class="au-lnk" href="#prototype">Open the prototype</a>
+      <button type="button" class="au-lnk au-play" id="heroVideo" hidden>Watch the 30-second walkthrough</button>
+    </div>
+  </div>
+  <!-- filled from CONTENT.hero: three screen ids → assets/hero/<id>.png (make them with hero-stills.sh) -->
+  <div class="au-phones" id="heroPhones" aria-label="Three screens from the prototype"></div>
+</header>
+
+<section class="au-sec au-white" id="why">
+  <div class="au-wrap">
+    <div class="au-split">
+      <div>
+        <p class="au-kicker">Why you’re seeing this</p>
+        <h2 class="au-h2">30,000 subscription apps taught us what moves conversion. <span>Here’s what we’d test first at Yousician.</span></h2>
+      </div>
+      <div>
+        <p>Adapty runs subscriptions for <b>more than 30,000 apps</b>, so we see which onboarding and paywall changes lift revenue across the whole market, not just inside one app.</p>
+        <p>We pointed that at Yousician. We took <b>your own screens, copy and prices</b> from your web sign-up, App Store listing and site, and rebuilt the path from install to paywall around the five ideas with the most potential.</p>
+      </div>
+    </div>
+    <div class="au-stats">
+      <div class="au-stat"><b>30,000+</b><span>apps run their subscriptions on Adapty</span></div>
+      <div class="au-stat"><b>5</b><span>ideas, each built as a working screen</span></div>
+      <div class="au-stat"><b>0</b><span>changes to your art direction</span></div>
+    </div>
+    <div class="au-notes">
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></div>
+        <h3>Five ideas, not fifteen</h3>
+        <p>We’re not proposing to rebuild every screen. These are the changes with the highest potential, ranked by what we’d test first.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/></svg></div>
+        <h3>Your design, not ours</h3>
+        <p>Every colour, control and price in the prototype is Yousician’s. We changed the order and what gets shown.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4H15"/></svg></div>
+        <h3>We hope you haven’t tried these yet</h3>
+        <p>We work from the outside, so we can’t see your iOS flow or your test history. If you’ve already run one of these, tell us and we’ll go deeper on the rest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec" id="ideas">
+  <div class="au-wrap">
+    <div class="au-ideas-h">
+      <p class="au-kicker">The shortlist</p>
+      <h2 class="au-h2">Five ideas. <span>Ranked by what we’d test first.</span></h2>
+    </div>
+    <div class="au-list" id="ideaList"></div>
+    <div class="au-band">
+      <div>
+        <p class="au-k">Potential outcome, based on Adapty data</p>
+        <h3>Together they work on three moments: what you give back after the quiz, what people hear before the price, and what happens when someone says no.</h3>
+        <p class="au-fn" id="bandFn"></p>
+        <a class="au-btn" href="#prototype">Tap through the prototype</a>
+      </div>
+      <div class="au-nums" id="bandNums"></div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec au-white" id="prototype">
+  <div class="au-wrap">
+    <div class="au-proto-h">
+      <p class="au-kicker">The prototype</p>
+      <h2 class="au-h2">Every idea, inside your own onboarding.</h2>
+      <p>Tap through it like a new user, or jump straight to an idea. Green numbers mark the screens that carry one.</p>
+    </div>
+    <div class="au-langrow" id="langRow" hidden><span>Prototype language</span><div class="au-lsw" id="langSw" role="group" aria-label="Prototype language"></div></div>
+    <div class="au-seg" id="chips" role="tablist" aria-label="Screens"></div>
+    <div class="au-stage">
+      <div class="phone"><div class="phone-in">
+        <div class="island"></div>
+        <div class="sbar"><span>9:41</span><span>●●● ▮</span></div>
+
+<!-- SCREENS:START — one section.scr[data-id=ID] per screen, in flow order. Only the screens an idea lands on,
+     plus the context needed to read the flow (~8–10). Wiring: data-go="<id>" · data-back · data-pick="key:value"
+     (+ data-advance="<id>") · data-toggle="key:value" · data-bind="key" / "label:key" / "count:key" ·
+     data-requires="key" · data-show="key:value" · data-input="key" · class="scr sheet" slides up (offer paywall).
+     RULE: images only from assets/ (their app, their site, App Store) — never stock, never hotlinked.
+     Extras: data-t="key" = translatable (markup is CONTENT.langs[0]; other languages in CONTENT.i18n) — keep data-t on
+     leaf-ish elements, never on an element that also carries data-bind/data-pick/data-show;
+     data-langtoggle cycles the language (their own language pill); data-aside keeps a screen out of the flow
+     (the paywall TODAY, rendered only for the side-by-side still). -->
+
+<section class="scr" data-id="instrument">
+  <div class="y-b">
+    <svg class="y-logo" viewBox="0 0 28 42" aria-label="Yousician"><path d="M13.9653 34.622C10.2165 34.622 7.16303 31.5712 7.16303 27.8197H0.363342C0.363342 35.32 6.46503 41.4217 13.9653 41.4217C21.4657 41.4217 27.5673 35.32 27.5673 27.8197H20.7676C20.7676 31.5712 17.7168 34.622 13.9653 34.622Z"/><path d="M20.7676 0.615723V14.2177C20.7676 17.9692 17.7168 21.02 13.9653 21.02C10.2139 21.02 7.16565 17.9692 7.16565 14.2177V0.615723H0.363342V14.2177C0.363342 21.718 6.46503 27.8197 13.9653 27.8197C21.4657 27.8197 27.5673 21.718 27.5673 14.2177V0.615723H20.7676Z"/></svg>
+    <h1 class="y-h"><span data-t="in_h">Choose your</span> <span class="y-g" data-t="in_g">instrument</span></h1>
+    <p class="y-s" data-t="in_s">Pick 1 for now — you can switch anytime!</p>
+    <div class="y-ins">
+      <button class="y-in" data-pick="instrument:guitar" data-advance="level"><img src="assets/site/guitar.png" alt=""><span data-t="i_guitar">Guitar</span></button>
+      <button class="y-in" data-pick="instrument:piano" data-advance="level"><img src="assets/site/piano.png" alt=""><span data-t="i_piano">Piano</span></button>
+      <button class="y-in" data-pick="instrument:singing" data-advance="level"><img src="assets/site/voice.png" alt=""><span data-t="i_singing">Singing</span></button>
+      <button class="y-in" data-pick="instrument:bass" data-advance="level"><img src="assets/site/bass.png" alt=""><span data-t="i_bass">Bass</span></button>
+      <button class="y-in" data-pick="instrument:ukulele" data-advance="level"><img src="assets/site/ukulele.png" alt=""><span data-t="i_ukulele">Ukulele</span></button>
+    </div>
+    <div class="y-foot">
+      <div class="y-nav"><button class="y-bk" data-back><svg viewBox="0 0 9 15"><path d="M8 1L1.5 7.5 8 14"/></svg><span data-t="back">Back</span></button></div>
+      <div class="y-steps"><span data-t="st1">Step 1 of 7</span><i class="y-c"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <span class="y-skip" data-t="skip">Skip to sign-up</span>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="level">
+  <div class="y-b">
+    <svg class="y-logo" viewBox="0 0 28 42"><path d="M13.9653 34.622C10.2165 34.622 7.16303 31.5712 7.16303 27.8197H0.363342C0.363342 35.32 6.46503 41.4217 13.9653 41.4217C21.4657 41.4217 27.5673 35.32 27.5673 27.8197H20.7676C20.7676 31.5712 17.7168 34.622 13.9653 34.622Z"/><path d="M20.7676 0.615723V14.2177C20.7676 17.9692 17.7168 21.02 13.9653 21.02C10.2139 21.02 7.16565 17.9692 7.16565 14.2177V0.615723H0.363342V14.2177C0.363342 21.718 6.46503 27.8197 13.9653 27.8197C21.4657 27.8197 27.5673 21.718 27.5673 14.2177V0.615723H20.7676Z"/></svg>
+    <h1 class="y-h"><span data-t="lv_h">What’s your</span> <span class="y-g" data-t="lv_g">current level?</span></h1>
+    <p class="y-s" data-t="lv_s">We'll get you on the right track</p>
+    <div class="y-rows">
+      <button class="y-row" data-pick="level:first" data-advance="genre"><span data-t="lv_1">First timer</span><small data-t="lv_1s">I'm new to my instrument</small></button>
+      <button class="y-row" data-pick="level:beginner" data-advance="genre"><span data-t="lv_2">Beginner</span><small data-t="lv_2s">I only know some basics</small></button>
+      <button class="y-row" data-pick="level:inter" data-advance="genre"><span data-t="lv_3">Intermediate</span><small data-t="lv_3s">I can play or sing many songs</small></button>
+      <button class="y-row" data-pick="level:adv" data-advance="genre"><span data-t="lv_4">Advanced</span><small data-t="lv_4s">I can play or sing most songs &amp; solos</small></button>
+    </div>
+    <div class="y-foot">
+      <div class="y-nav"><button class="y-bk" data-back><svg viewBox="0 0 9 15"><path d="M8 1L1.5 7.5 8 14"/></svg><span data-t="back">Back</span></button></div>
+      <div class="y-steps"><span data-t="st2">Step 2 of 7</span><i class="y-d"></i><i class="y-c"></i><i></i><i></i><i></i><i></i><i></i></div>
+      <span class="y-skip" data-t="skip">Skip to sign-up</span>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="genre">
+  <div class="y-b">
+    <svg class="y-logo" viewBox="0 0 28 42"><path d="M13.9653 34.622C10.2165 34.622 7.16303 31.5712 7.16303 27.8197H0.363342C0.363342 35.32 6.46503 41.4217 13.9653 41.4217C21.4657 41.4217 27.5673 35.32 27.5673 27.8197H20.7676C20.7676 31.5712 17.7168 34.622 13.9653 34.622Z"/><path d="M20.7676 0.615723V14.2177C20.7676 17.9692 17.7168 21.02 13.9653 21.02C10.2139 21.02 7.16565 17.9692 7.16565 14.2177V0.615723H0.363342V14.2177C0.363342 21.718 6.46503 27.8197 13.9653 27.8197C21.4657 27.8197 27.5673 21.718 27.5673 14.2177V0.615723H20.7676Z"/></svg>
+    <h1 class="y-h"><span class="y-g" data-t="ge_g">Pick 1 or more</span> <span data-t="ge_h">you’d like to play</span></h1>
+    <p class="y-s" data-t="ge_s">You can choose more later</p>
+    <div class="y-scroll"><div class="y-gen">
+      <button class="y-ge" data-toggle="genre:rock"><img src="assets/site/rock.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_rock">Rock</span></button>
+      <button class="y-ge" data-toggle="genre:pop"><img src="assets/site/pop.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_pop">Pop</span></button>
+      <button class="y-ge" data-toggle="genre:indie"><img src="assets/site/indie.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_indie">Alternative &amp; Indie</span></button>
+      <button class="y-ge" data-toggle="genre:blues"><img src="assets/site/blues.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_blues">Blues</span></button>
+      <button class="y-ge" data-toggle="genre:funk"><img src="assets/site/funk.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_funk">Funk &amp; Soul</span></button>
+      <button class="y-ge" data-toggle="genre:folk"><img src="assets/site/folk.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_folk">Folk</span></button>
+      <button class="y-ge" data-toggle="genre:classical"><img src="assets/site/classical.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_classical">Classical</span></button>
+      <button class="y-ge" data-toggle="genre:world"><img src="assets/site/world.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_world">World</span></button>
+      <button class="y-ge" data-toggle="genre:country"><img src="assets/site/country.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_country">Country &amp; Roots</span></button>
+      <button class="y-ge" data-toggle="genre:jazz"><img src="assets/site/jazz.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_jazz">Jazz</span></button>
+      <button class="y-ge" data-toggle="genre:latin"><img src="assets/site/latin.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_latin">Latin</span></button>
+      <button class="y-ge" data-toggle="genre:metal"><img src="assets/site/metal.png" alt=""><b><svg viewBox="0 0 12 12"><path d="M2 6.5l2.6 2.5L10 3"/></svg></b><span data-t="g_metal">Metal</span></button>
+    </div></div>
+    <div class="y-foot">
+      <div class="y-nav"><button class="y-bk" data-back><svg viewBox="0 0 9 15"><path d="M8 1L1.5 7.5 8 14"/></svg><span data-t="back">Back</span></button><button class="y-nx" data-go="practice" data-requires="genre"><span data-t="next">Next</span><svg viewBox="0 0 9 15"><path d="M1 1l6.5 6.5L1 14"/></svg></button></div>
+      <div class="y-steps"><span data-t="st3">Step 3 of 7</span><i class="y-d"></i><i class="y-d"></i><i class="y-c"></i><i></i><i></i><i></i><i></i></div>
+      <span class="y-skip" data-t="skip">Skip to sign-up</span>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="practice">
+  <div class="y-b">
+    <svg class="y-logo" viewBox="0 0 28 42"><path d="M13.9653 34.622C10.2165 34.622 7.16303 31.5712 7.16303 27.8197H0.363342C0.363342 35.32 6.46503 41.4217 13.9653 41.4217C21.4657 41.4217 27.5673 35.32 27.5673 27.8197H20.7676C20.7676 31.5712 17.7168 34.622 13.9653 34.622Z"/><path d="M20.7676 0.615723V14.2177C20.7676 17.9692 17.7168 21.02 13.9653 21.02C10.2139 21.02 7.16565 17.9692 7.16565 14.2177V0.615723H0.363342V14.2177C0.363342 21.718 6.46503 27.8197 13.9653 27.8197C21.4657 27.8197 27.5673 21.718 27.5673 14.2177V0.615723H20.7676Z"/></svg>
+    <h1 class="y-h"><span data-t="pr_h1">What</span> <span class="y-g" data-t="pr_g">practice</span> <span data-t="pr_h2">suits you?</span></h1>
+    <p class="y-s" data-t="pr_s">We recommend just 3 days a week to progress fast!</p>
+    <div class="y-rows">
+      <button class="y-row" data-pick="freq:casual" data-advance="payoff"><span data-t="fr_1">Casual</span><small data-t="fr_1s">1-2 days / week</small></button>
+      <button class="y-row" data-pick="freq:regular" data-advance="payoff"><span class="y-rec" data-t="rec">RECOMMENDED</span><span data-t="fr_2">Regular</span><small data-t="fr_2s">3 days / week</small></button>
+      <button class="y-row" data-pick="freq:unstoppable" data-advance="payoff"><span data-t="fr_3">Unstoppable</span><small data-t="fr_3s">4+ days / week</small></button>
+      <button class="y-row" data-pick="freq:unsure" data-advance="payoff"><span data-t="fr_4">Not sure yet</span></button>
+    </div>
+    <div class="y-foot">
+      <div class="y-nav"><button class="y-bk" data-back><svg viewBox="0 0 9 15"><path d="M8 1L1.5 7.5 8 14"/></svg><span data-t="back">Back</span></button></div>
+      <div class="y-steps"><span data-t="st4">Step 4 of 7</span><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-c"></i><i></i><i></i><i></i></div>
+      <span class="y-skip" data-t="skip">Skip to sign-up</span>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="payoff">
+  <div class="y-b">
+    <svg class="y-logo" viewBox="0 0 28 42"><path d="M13.9653 34.622C10.2165 34.622 7.16303 31.5712 7.16303 27.8197H0.363342C0.363342 35.32 6.46503 41.4217 13.9653 41.4217C21.4657 41.4217 27.5673 35.32 27.5673 27.8197H20.7676C20.7676 31.5712 17.7168 34.622 13.9653 34.622Z"/><path d="M20.7676 0.615723V14.2177C20.7676 17.9692 17.7168 21.02 13.9653 21.02C10.2139 21.02 7.16565 17.9692 7.16565 14.2177V0.615723H0.363342V14.2177C0.363342 21.718 6.46503 27.8197 13.9653 27.8197C21.4657 27.8197 27.5673 21.718 27.5673 14.2177V0.615723H20.7676Z"/></svg>
+    <h1 class="y-h" data-t="po_h">Great choice!</h1>
+    <p class="y-s js-po-sub">By practicing 3 days a week you'll level up in 1 week!</p>
+    <div class="y-path">
+      <img class="js-ins-img" src="assets/site/guitar.png" alt="">
+      <div><small data-t="po_k">Your path</small><p class="js-po-t">Guitar · First timer</p><div class="y-tags js-po-tags"><span>Rock</span><span>3 days a week</span></div></div>
+    </div>
+    <div class="y-curve">
+      <svg viewBox="0 0 326 150" preserveAspectRatio="none"><path d="M86 84 H118 C145 84 158.5 68.5 172 53" style="stroke:var(--b-accent2)" stroke-width="1.6" fill="none"/><path d="M172 53 C185.5 37.5 199 22 226 22 H246" style="stroke:var(--b-pink)" stroke-width="1.6" fill="none"/></svg>
+      <div class="y-c1"><i><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg></i><b data-t="po_today">TODAY</b><span data-t="po_today_s">Start your free trial</span></div>
+      <div class="y-c2"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="5"/><path d="M9 13.5L7.5 21l4.5-2.5 4.5 2.5L15 13.5"/></svg></i><b data-t="po_week">IN 1 WEEK</b><span data-t="po_week_s">Level up</span></div>
+    </div>
+    <div class="y-stars">★★★★★</div>
+    <p class="y-q"><span data-t="po_q">“Yousician brings you along little by little and before you know it, you're playing. Love it.”</span><br>– Rob A.</p>
+    <div class="y-foot">
+      <div class="y-nav"><button class="y-bk" data-back><svg viewBox="0 0 9 15"><path d="M8 1L1.5 7.5 8 14"/></svg><span data-t="back">Back</span></button><button class="y-nx" data-go="quickwin"><span data-t="next">Next</span><svg viewBox="0 0 9 15"><path d="M1 1l6.5 6.5L1 14"/></svg></button></div>
+      <div class="y-steps"><span data-t="st5">Step 5 of 7</span><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-c"></i><i></i><i></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="quickwin">
+  <div class="y-b">
+    <svg class="y-logo" viewBox="0 0 28 42"><path d="M13.9653 34.622C10.2165 34.622 7.16303 31.5712 7.16303 27.8197H0.363342C0.363342 35.32 6.46503 41.4217 13.9653 41.4217C21.4657 41.4217 27.5673 35.32 27.5673 27.8197H20.7676C20.7676 31.5712 17.7168 34.622 13.9653 34.622Z"/><path d="M20.7676 0.615723V14.2177C20.7676 17.9692 17.7168 21.02 13.9653 21.02C10.2139 21.02 7.16565 17.9692 7.16565 14.2177V0.615723H0.363342V14.2177C0.363342 21.718 6.46503 27.8197 13.9653 27.8197C21.4657 27.8197 27.5673 21.718 27.5673 14.2177V0.615723H20.7676Z"/></svg>
+    <h1 class="y-h"><span data-t="qw_h">Play your</span> <span class="y-g" data-t="qw_g">first note</span></h1>
+    <p class="y-s js-qw-sub">Play it on your guitar</p>
+    <div class="y-hw">
+      <div class="y-str"></div><div class="y-str"></div><div class="y-str"></div><div class="y-str"></div>
+      <div class="y-hit"></div>
+      <span class="y-mult">5×</span>
+      <svg class="y-arc" viewBox="0 0 326 240" preserveAspectRatio="none"><path d="M64 142 C88 64 140 64 168 104"/><path d="M168 104 C198 30 238 30 254 194"/></svg>
+      <span class="y-nt g" style="left:45px;top:167px">0</span>
+      <span class="y-nt b" style="left:149px;top:107px">3</span>
+      <span class="y-nt o" style="left:235px;top:197px">2</span>
+      <span class="y-nt p" style="left:296px;top:77px">5</span>
+      <span class="y-ball"></span>
+      <div class="y-perf" data-show="played:1"><span data-t="qw_perf">Perfect!</span></div>
+    </div>
+    <div class="y-mic"><i><b style="height:5px"></b><b style="height:10px"></b><b style="height:15px"></b><b style="height:8px"></b><b style="height:12px"></b></i><span data-t="qw_mic">Mic on · Yousician is listening</span></div>
+    <div class="y-won" data-show="played:1"><b>★</b><span data-t="qw_won">First note, nailed. Every lesson works like this: you play, Yousician listens and tells you how you did.</span></div>
+    <div class="y-foot">
+      <div class="y-nav" data-show="played:0"><button class="y-big" data-pick="played:1" style="padding:0 34px"><span data-t="qw_cta">Play the note</span></button></div>
+      <div class="y-nav" data-show="played:1"><button class="y-bk" data-back><svg viewBox="0 0 9 15"><path d="M8 1L1.5 7.5 8 14"/></svg><span data-t="back">Back</span></button><button class="y-nx" data-go="trial"><span data-t="next">Next</span><svg viewBox="0 0 9 15"><path d="M1 1l6.5 6.5L1 14"/></svg></button></div>
+      <div class="y-steps"><span data-t="st6">Step 6 of 7</span><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-c"></i><i></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="trial">
+  <div class="y-b">
+    <svg class="y-logo" viewBox="0 0 28 42"><path d="M13.9653 34.622C10.2165 34.622 7.16303 31.5712 7.16303 27.8197H0.363342C0.363342 35.32 6.46503 41.4217 13.9653 41.4217C21.4657 41.4217 27.5673 35.32 27.5673 27.8197H20.7676C20.7676 31.5712 17.7168 34.622 13.9653 34.622Z"/><path d="M20.7676 0.615723V14.2177C20.7676 17.9692 17.7168 21.02 13.9653 21.02C10.2139 21.02 7.16565 17.9692 7.16565 14.2177V0.615723H0.363342V14.2177C0.363342 21.718 6.46503 27.8197 13.9653 27.8197C21.4657 27.8197 27.5673 21.718 27.5673 14.2177V0.615723H20.7676Z"/></svg>
+    <h1 class="y-h" style="margin-top:44px"><span data-t="tr_h">How your</span> <span class="y-g" data-t="tr_g">free trial works</span></h1>
+    <div class="y-tl" style="margin-top:22px">
+      <div class="y-ts"><i><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg></i><p><b data-t="tr_1">TODAY</b><span data-t="tr_1s">Unlock full access to Yousician.</span></p></div>
+      <div class="y-ts"><i><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></i><p><span data-t="tr_2s">Enjoy unlimited access to 10,000+ songs, lessons &amp; more.</span></p></div>
+      <div class="y-ts"><i><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></svg></i><p><b data-t="tr_3">DAY 7</b><span data-t="tr_3s">Your account is charged — cancel anytime before. Your Premium+ subscription will start after your trial!</span></p></div>
+    </div>
+    <div class="y-proof">
+      <img src="assets/crop/editors-choice.png" alt="App Store Editor's Choice">
+      <div class="y-rate"><span>★★★★★</span> <b data-t="tr_rate">4.6</b> <small data-t="tr_count">· 139K ratings on the App Store</small></div>
+      <p class="y-press"><span data-t="tr_press">“A fabulous place to start learning guitar, ukulele or bass.”</span><em data-t="tr_press_s">— The New York Times</em></p>
+    </div>
+    <div class="y-foot">
+      <div class="y-nav"><button class="y-bk" data-back><svg viewBox="0 0 9 15"><path d="M8 1L1.5 7.5 8 14"/></svg><span data-t="back">Back</span></button><button class="y-nx" data-go="paywall"><span data-t="next">Next</span><svg viewBox="0 0 9 15"><path d="M1 1l6.5 6.5L1 14"/></svg></button></div>
+      <div class="y-steps"><span data-t="st7">Step 7 of 7</span><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-c"></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="paywall">
+  <button class="y-x" data-go="offer" aria-label="Close">✕</button>
+  <div class="y-b y-pw">
+    <svg class="y-logo" viewBox="0 0 28 42"><path d="M13.9653 34.622C10.2165 34.622 7.16303 31.5712 7.16303 27.8197H0.363342C0.363342 35.32 6.46503 41.4217 13.9653 41.4217C21.4657 41.4217 27.5673 35.32 27.5673 27.8197H20.7676C20.7676 31.5712 17.7168 34.622 13.9653 34.622Z"/><path d="M20.7676 0.615723V14.2177C20.7676 17.9692 17.7168 21.02 13.9653 21.02C10.2139 21.02 7.16565 17.9692 7.16565 14.2177V0.615723H0.363342V14.2177C0.363342 21.718 6.46503 27.8197 13.9653 27.8197C21.4657 27.8197 27.5673 21.718 27.5673 14.2177V0.615723H20.7676Z"/></svg>
+    <div class="y-heroc"><img class="y-hg1 js-gen-1" src="assets/site/rock.png" alt=""><img class="y-hi js-ins-img" src="assets/site/guitar.png" alt=""><img class="y-hg2 js-gen-2" src="assets/site/pop.png" alt=""></div>
+    <h1 class="y-h js-pw-h">Play <span class="y-g">Rock</span> on your guitar</h1>
+    <div class="y-pr"><span>★★★★★</span><b data-t="pw_rate">4.6</b><small data-t="pw_count">· 139K ratings · Editor’s Choice</small></div>
+    <ul class="y-ben">
+      <li><svg viewBox="0 0 18 18"><path d="M3 9.5l4 4L15 5"/></svg><span class="js-pw-b1">Your Rock songs, from the full song library</span></li>
+      <li><svg viewBox="0 0 18 18"><path d="M3 9.5l4 4L15 5"/></svg><span data-t="pw_b2">Lesson plans by real music teachers</span></li>
+      <li><svg viewBox="0 0 18 18"><path d="M3 9.5l4 4L15 5"/></svg><span data-t="pw_b3">All 5 instruments, unlimited lessons</span></li>
+    </ul>
+    <div class="y-tm"><span>★★★★★</span><p><span data-t="po_q">“Yousician brings you along little by little and before you know it, you're playing. Love it.”</span> – Rob A.</p></div>
+    <div class="y-plans">
+      <button class="y-pl" data-pick="plan:year"><span class="y-save" data-t="pw_save">SAVE 55%</span><span><b data-t="pw_yr">Yearly</b><small class="y-free" data-t="pw_yr_s">7 days free, then $159.99/year</small></span><span class="y-pm"><span data-t="pw_yr_m">$13.33</span><small data-t="pw_permo">/month</small></span></button>
+      <button class="y-pl" data-pick="plan:month"><span><b data-t="pw_mo">Monthly</b><small data-t="pw_mo_s">Billed monthly</small></span><span class="y-pm"><span data-t="pw_mo_m">$29.99</span><small data-t="pw_permo">/month</small></span></button>
+    </div>
+    <div class="y-foot" style="gap:4px">
+      <button class="y-big js-pw-cta" data-go="offer">Start my free week</button>
+      <p class="y-terms js-pw-terms">7 days free, then $159.99 a year. Cancel anytime before day 7.</p>
+      <div class="y-legal"><span data-t="terms">Terms</span><span data-t="privacy">Privacy</span><span data-t="restore">Restore</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="scr sheet" data-id="offer" style="background:rgba(0,0,0,.6)">
+  <div class="y-sheet">
+    <div class="y-grab"></div>
+    <button class="y-x" data-go="paywall" aria-label="Close">✕</button>
+    <img class="y-of-img js-ins-img" src="assets/site/guitar.png" alt="">
+    <h1 class="y-h js-of-h">Only want to learn guitar?</h1>
+    <p class="y-s" style="color:var(--b-ink2)" data-t="of_s">Premium gives you unlimited lessons on one instrument.</p>
+    <div class="y-of-price"><span data-t="of_p">$119.99 / year</span><small data-t="of_pm">$10.00 a month · One Instrument plan</small></div>
+    <ul class="y-cmp">
+      <li><svg viewBox="0 0 18 18"><path d="M3 9.5l4 4L15 5"/></svg><span class="js-of-b1">Unlimited guitar lessons</span></li>
+      <li><svg viewBox="0 0 18 18"><path d="M3 9.5l4 4L15 5"/></svg><span data-t="of_b2">Instant feedback on every note you play</span></li>
+      <li class="y-no"><svg viewBox="0 0 18 18"><path d="M4 9h10"/></svg><span data-t="of_b3">Popular songs and all 5 instruments stay on Premium+</span></li>
+    </ul>
+    <div class="y-foot" style="gap:6px">
+      <button class="y-big js-of-cta">Get Premium for guitar</button>
+      <button class="y-ghost" data-go="paywall"><span data-t="of_back">Back to the Premium+ free trial</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="today" data-aside>
+  <div class="y-b">
+    <svg class="y-logo" viewBox="0 0 28 42"><path d="M13.9653 34.622C10.2165 34.622 7.16303 31.5712 7.16303 27.8197H0.363342C0.363342 35.32 6.46503 41.4217 13.9653 41.4217C21.4657 41.4217 27.5673 35.32 27.5673 27.8197H20.7676C20.7676 31.5712 17.7168 34.622 13.9653 34.622Z"/><path d="M20.7676 0.615723V14.2177C20.7676 17.9692 17.7168 21.02 13.9653 21.02C10.2139 21.02 7.16565 17.9692 7.16565 14.2177V0.615723H0.363342V14.2177C0.363342 21.718 6.46503 27.8197 13.9653 27.8197C21.4657 27.8197 27.5673 21.718 27.5673 14.2177V0.615723H20.7676Z"/></svg>
+    <h1 class="y-h"><span data-t="tr_h">How your</span> <span class="y-g" data-t="tr_g">free trial works</span></h1>
+    <div class="y-tl">
+      <div class="y-ts"><i><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg></i><p><b data-t="tr_1">TODAY</b><span data-t="tr_1s">Unlock full access to Yousician.</span></p></div>
+      <div class="y-ts"><i><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></i><p><span data-t="tr_2s">Enjoy unlimited access to 10,000+ songs, lessons &amp; more.</span></p></div>
+      <div class="y-ts"><i><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></svg></i><p><b data-t="tr_3">DAY 7</b><span data-t="tr_3s">Your account is charged — cancel anytime before. Your Premium+ subscription will start after your trial!</span></p></div>
+    </div>
+    <div class="y-foot">
+      <div class="y-nav"><button class="y-bk"><svg viewBox="0 0 9 15"><path d="M8 1L1.5 7.5 8 14"/></svg><span data-t="back">Back</span></button><button class="y-nx"><span data-t="next">Next</span><svg viewBox="0 0 9 15"><path d="M1 1l6.5 6.5L1 14"/></svg></button></div>
+      <div class="y-steps"><span data-t="st6of6">Step 6 of 6</span><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-d"></i><i class="y-c"></i></div>
+    </div>
+  </div>
+</section>
+<!-- SCREENS:END -->
+
+      </div></div>
+      <div class="au-pn" id="panel" aria-live="polite"></div>
+    </div>
+    <p class="au-hint">Close the paywall with ✕ to see idea 5. On “First note”, tap “Play the note”: in the app, the mic does the listening.</p>
+    <!-- shown when CONTENT.liveUrl is set: assets/qr-app.png = qr.swift "<liveUrl>?app" -->
+    <div class="au-qr" id="qrCard" hidden><img src="assets/qr-app.png" alt="QR code that opens the prototype full screen"><div><b>Try it on your phone</b><p>Scan to open the prototype full screen, the way a new user would see it.</p></div></div>
+    <div class="au-mobw" id="qrMob" hidden><a class="au-btn" href="?app">Open it full screen</a></div>
+  </div>
+</section>
+
+<!-- the paywall TODAY vs PROPOSED — built from CONTENT.compare (stills: assets/hero/<today>.png, <proposed>.png) -->
+<section class="au-sec" id="compare" hidden><div class="au-wrap" id="cmpBody"></div></section>
+
+<footer class="au-foot" id="sources">
+  <div class="au-wrap">
+    <details id="srcDetails">
+      <summary>Where the numbers come from</summary>
+      <div class="au-srcs" id="srcBody"></div>
+    </details>
+    <p class="au-fine" id="fine"></p>
+    <div class="au-cta-line">
+      <p>Every screen here can be built and A/B tested in Adapty’s Flow Builder, with no app release.</p>
+      <a class="au-btn" href="https://adapty.io/flow-paywall-builder/" target="_blank" rel="noopener">About Flow Builder</a>
+    </div>
+  </div>
+</footer>
+
+<!-- extras: video dialog (CONTENT.video), ?app bar, ?tour overlay (CONTENT.tour) -->
+<dialog class="au-vid" id="vid" aria-label="Walkthrough video">
+  <div class="au-vid-in"><video id="vidEl" controls muted playsinline preload="none"></video></div>
+  <div class="au-vid-bar"><a id="vidDl" download>Download the MP4</a><button type="button" class="au-vid-x" id="vidX">Close</button></div>
+</dialog>
+<div class="au-scrim" id="abScrim"></div>
+<div class="au-appbar" id="appbar">
+  <button type="button" class="au-ab-why" id="abWhy"><i></i><span id="abT"></span><em>Why ↑</em></button>
+  <div class="au-lsw" id="abLang" role="group" aria-label="Language"></div>
+</div>
+<div class="au-tour" aria-hidden="true">
+  <div class="au-tb"><img src="assets/brand/appstore-icon.jpg" alt="">Growth Audit <small>· Yousician</small></div>
+  <div class="au-tby">Prepared by Adapty</div>
+  <div class="au-tcap" id="tCap"></div>
+  <div class="au-ttap" id="tTap"></div>
+  <div class="au-tprog"><i id="tProg"></i></div>
+  <div class="au-tintro" id="tIntro"></div>
+  <div class="au-tend" id="tEnd"></div>
+</div>
+
+<!-- CONTENT — all the audit's words and numbers, as data. Schema (brand-check enforces it):
+     ideas  : 3–5 rows, ranked (the audit is five ideas, never fifteen). screen = the screen that shows it.
+     panel  : one entry per screen. idea = its number in ideas (1-based) or 0 for a context screen.
+              why on an idea screen reads "<b>Try</b> X, <b>because</b> Y." in ≤ 45 words; iv = its range.
+              why on a context screen is one line saying what it sets up.
+     hero   : three screen ids shown as stills in the hero — run hero-stills.sh after the screens are done.
+     outcome: combined "up to" numbers, PS-deck style, never above the ceiling of the per-idea ranges.
+     sources: public facts only — App Store, their site, their screens. No sales research on this page.
+     EXTRAS (each one hides itself when left empty):
+     langs  : [{"code":"en","name":"English"},{"code":"es","name":"Español · Spain prices"}] — first = the markup's language
+     i18n   : {"es": {"<data-t key>": "text with {tokens}"}} — every data-t key, for every language after the first
+     prices : {"es": {"yr": "39,99 €", …}} — {tokens} in i18n strings; that storefront's real IAP prices
+     labelsI18n: {"es": {"goal": {"a": "…"}}} — C.labels per language (data-bind="label:…")
+     liveUrl: final Pages URL (QR card + video end card); the QR file encodes liveUrl + "?app"
+     video / poster: "assets/walkthrough.mp4" / "assets/walkthrough-poster.jpg" (record-video.sh)
+     compare: {today, proposed, kicker, title, sub, todayCap, rows:[{h, idea, was, now}], kept} — today = a data-aside screen
+     tour   : {segments:[{id, d, st, tap:[selector-in-screen, ms], pop, reveal, end}], captions:{id:{n|k, t, l, o, ol}},
+              introLede, endTitle} — ~30 s total; the last segment has end:true (the end card) -->
+<script type="application/json" id="content">
+{
+ "app": "Yousician",
+ "state": {
+  "instrument": "guitar",
+  "level": "first",
+  "genre": [
+   "rock"
+  ],
+  "freq": "regular",
+  "played": "0",
+  "plan": "year"
+ },
+ "labels": {
+  "instrument": {
+   "guitar": "Guitar",
+   "piano": "Piano",
+   "singing": "Singing",
+   "bass": "Bass",
+   "ukulele": "Ukulele"
+  },
+  "level": {
+   "first": "First timer",
+   "beginner": "Beginner",
+   "inter": "Intermediate",
+   "adv": "Advanced"
+  },
+  "genre": {
+   "rock": "Rock",
+   "pop": "Pop",
+   "indie": "Alternative & Indie",
+   "blues": "Blues",
+   "funk": "Funk & Soul",
+   "folk": "Folk",
+   "classical": "Classical",
+   "world": "World",
+   "country": "Country & Roots",
+   "jazz": "Jazz",
+   "latin": "Latin",
+   "metal": "Metal"
+  }
+ },
+ "chips": {
+  "instrument": "Instrument",
+  "level": "Level",
+  "genre": "Genres",
+  "practice": "Practice",
+  "payoff": "Great choice",
+  "quickwin": "First note",
+  "trial": "Free trial",
+  "paywall": "Paywall",
+  "offer": "On close"
+ },
+ "hero": [
+  "payoff",
+  "paywall",
+  "quickwin"
+ ],
+ "outcome": {
+  "cr": "+20%",
+  "arpu": "+15%"
+ },
+ "ideas": [
+  {
+   "screen": "payoff",
+   "title": "Use the four answers you already collect",
+   "what": "Your sign-up asks for instrument, level, genres and practice days, but only the practice days come back (“level up in 1 week”). Echo all four on “Great choice!” and carry them into the paywall headline: “Play Rock on your guitar”.",
+   "impact": "+10–20%",
+   "il": "CR to trial start"
+  },
+  {
+   "screen": "quickwin",
+   "title": "Let people hear Yousician listen before the price",
+   "what": "Instant feedback, the app hearing you and saying “Perfect!”, leads your App Store page but never appears in the sign-up. One note on the highway between “Great choice!” and the trial gives every new player a win in ten seconds, before you ask for a card.",
+   "impact": "+5–15%",
+   "il": "CR to trial start"
+  },
+  {
+   "screen": "trial",
+   "title": "Put your proof where people decide",
+   "what": "Your trial screen explains Today to Day 7 but carries no proof. The App Store Editor’s Choice badge, 4.6 ★ from 139K ratings and the New York Times line all sit on your App Store page. Move them under the timeline.",
+   "impact": "+5–10%",
+   "il": "CR to trial start"
+  },
+  {
+   "screen": "paywall",
+   "title": "Make the yearly saving impossible to miss",
+   "what": "$159.99 a year is $13.33 a month, 55% less than paying $29.99 monthly. Preselect yearly, show it as a monthly price with “Save 55%” on the card, and put the 7-day trial terms in one line under the button.",
+   "impact": "+10–15%",
+   "il": "ARPU, from annual mix"
+  },
+  {
+   "screen": "offer",
+   "title": "Catch the people who close the paywall",
+   "what": "Someone who closes Premium+ may only want one instrument. Offer your One Instrument plan, $119.99 a year ($10.00 a month), for the instrument they picked in step 1. A real, smaller plan, not a fake discount or a countdown.",
+   "impact": "+10–15%",
+   "il": "ARPU, from people who said no"
+  }
+ ],
+ "panel": {
+  "instrument": {
+   "idea": 0,
+   "t": "Choose your instrument",
+   "why": "Your step 1, kept as it is. The instrument they tap picks the photo, paywall headline and close offer later on."
+  },
+  "level": {
+   "idea": 0,
+   "t": "What’s your current level?",
+   "why": "Kept word for word. The level comes back on “Great choice!” (idea 1)."
+  },
+  "genre": {
+   "idea": 0,
+   "t": "Pick 1 or more you’d like to play",
+   "why": "Kept word for word. The genres they pick become the paywall headline (idea 1)."
+  },
+  "practice": {
+   "idea": 0,
+   "t": "What practice suits you?",
+   "why": "Kept word for word, including your RECOMMENDED tag on 3 days a week."
+  },
+  "payoff": {
+   "idea": 1,
+   "t": "Use the four answers you already collect",
+   "why": "<b>Try</b> showing the instrument, level, genres and practice days they just picked on “Great choice!”, then naming them in the paywall headline, <b>because</b> four answers go in and today only the practice days come back.",
+   "iv": "CR +10–20%",
+   "il": "to trial start",
+   "also": "The same answers drive the paywall headline and the offer on close."
+  },
+  "quickwin": {
+   "idea": 2,
+   "t": "Let people hear Yousician listen before the price",
+   "why": "<b>Try</b> one note on your highway right before the trial, with the mic on and “Perfect!” when it lands, <b>because</b> instant feedback is what sets Yousician apart, and today people reach the price without having heard it.",
+   "iv": "CR +5–15%",
+   "il": "to trial start",
+   "also": "Tap “Play the note”. In the app, the mic does the listening."
+  },
+  "trial": {
+   "idea": 3,
+   "t": "Put your proof where people decide",
+   "why": "<b>Try</b> the Editor’s Choice laurel, 4.6 ★ from 139K ratings and the New York Times line under your own trial timeline, <b>because</b> this is where people decide to hand over a card, and today the screen has no proof.",
+   "iv": "CR +5–10%",
+   "il": "to trial start",
+   "also": "Timeline copy is yours, word for word."
+  },
+  "paywall": {
+   "idea": 4,
+   "t": "Make the yearly saving impossible to miss",
+   "why": "<b>Try</b> yearly preselected as $13.33 a month with “Save 55%” on the card, <b>because</b> $159.99 next to $29.99 reads as the expensive option until someone does the monthly maths for them.",
+   "iv": "ARPU +10–15%",
+   "il": "from annual mix",
+   "also": "Also here: idea 1 (the headline names their genre and instrument) and idea 3 (the rating row). Close with ✕ for idea 5."
+  },
+  "offer": {
+   "idea": 5,
+   "t": "Catch the people who close the paywall",
+   "why": "<b>Try</b> your One Instrument plan at $119.99 a year, for the instrument they chose, when they close the paywall, <b>because</b> many beginners only want guitar, and a smaller real plan keeps them from leaving with nothing.",
+   "iv": "ARPU +10–15%",
+   "il": "from people who said no"
+  }
+ },
+ "langs": [
+  {
+   "code": "en",
+   "name": "English"
+  },
+  {
+   "code": "de",
+   "name": "Deutsch · Preise Deutschland"
+  }
+ ],
+ "i18n": {
+  "de": {
+   "in_h": "Wähle dein",
+   "in_g": "Instrument",
+   "in_s": "Wähle 1 fürs erste — du kannst es jederzeit ändern!",
+   "i_guitar": "Gitarre",
+   "i_piano": "Piano",
+   "i_singing": "Singen",
+   "i_bass": "Bass",
+   "i_ukulele": "Ukulele",
+   "back": "Zurück",
+   "next": "Weiter",
+   "skip": "Weiter zur Anmeldung",
+   "st1": "Schritt 1 von 7",
+   "st2": "Schritt 2 von 7",
+   "st3": "Schritt 3 von 7",
+   "st4": "Schritt 4 von 7",
+   "st5": "Schritt 5 von 7",
+   "st6": "Schritt 6 von 7",
+   "st7": "Schritt 7 von 7",
+   "st6of6": "Schritt 6 von 6",
+   "lv_h": "Wo",
+   "lv_g": "stehst du derzeit?",
+   "lv_s": "Wir bringen dich auf die richtige Spur",
+   "lv_1": "Neuling",
+   "lv_1s": "Ich fange mit dem Instrument erst an",
+   "lv_2": "Anfänger",
+   "lv_2s": "Ich habe nur einige Grundkenntnisse",
+   "lv_3": "Mittel",
+   "lv_3s": "Ich kann viele Songs spielen oder singen",
+   "lv_4": "Fortgeschritten",
+   "lv_4s": "Ich kann die meisten Songs und Soli spielen oder singen",
+   "ge_g": "1 oder mehr wählen,",
+   "ge_h": "die du spielen möchtest",
+   "ge_s": "Du kannst später mehr auswählen",
+   "g_rock": "Rock",
+   "g_pop": "Pop",
+   "g_indie": "Alternative und Indie",
+   "g_blues": "Blues",
+   "g_funk": "Funk und Soul",
+   "g_folk": "Volksmusik",
+   "g_classical": "Klassik",
+   "g_world": "International",
+   "g_country": "Country &amp; Roots",
+   "g_jazz": "Jazz",
+   "g_latin": "Latin",
+   "g_metal": "Metal",
+   "pr_h1": "Welche",
+   "pr_g": "Übung",
+   "pr_h2": "liegt dir?",
+   "pr_s": "Schon ab 3 Tagen pro Woche kannst du schnell Fortschritte erzielen!",
+   "fr_1": "Entspannt",
+   "fr_1s": "1 bis 2 Tage / Woche",
+   "rec": "EMPFOHLEN",
+   "fr_2": "Regelmäßig",
+   "fr_2s": "3 Tage/Woche",
+   "fr_3": "Häufig",
+   "fr_3s": "Mehr als 4 Tage/Woche",
+   "fr_4": "Nicht sicher",
+   "po_h": "Sehr gute Wahl!",
+   "po_k": "Dein Lernpfad",
+   "po_today": "HEUTE",
+   "po_today_s": "Jetzt kostenlos testen",
+   "po_week": "IN 1 WOCHE",
+   "po_week_s": "Mache Fortschritte",
+   "po_q": "„Yousician führt dich Schritt für Schritt an die Musik heran und bevor du es selbst merkst, spielst du. Einfach Wahnsinn.“",
+   "qw_h": "Spiel deinen",
+   "qw_g": "ersten Ton",
+   "qw_perf": "Perfekt!",
+   "qw_mic": "Mikro an · Yousician hört zu",
+   "qw_won": "Erster Ton, sitzt. So läuft jede Lektion: Du spielst, Yousician hört zu und sagt dir, wie es war.",
+   "qw_cta": "Ton spielen",
+   "tr_h": "So funktioniert",
+   "tr_g": "dein Abo",
+   "tr_1": "HEUTE",
+   "tr_1s": "Vollen Zugriff auf Yousician freischalten.",
+   "tr_2s": "Genieße unbegrenzten Zugang zu mehr als 10.000 Songs, Lektionen und mehr.",
+   "tr_3": "TAG 7",
+   "tr_3s": "Dein Konto wird belastet. Du kannst jederzeit vorher kündigen. Dein Premium+-Abonnement beginnt nach deiner Testversion!",
+   "tr_rate": "4,6",
+   "tr_count": "· 14.036 Bewertungen im App Store",
+   "tr_press": "„A fabulous place to start learning guitar, ukulele or bass.“",
+   "tr_press_s": "— The New York Times",
+   "pw_rate": "4,6",
+   "pw_count": "· 14.036 Bewertungen",
+   "pw_b2": "Lernpläne von echten Musiklehrern",
+   "pw_b3": "Alle 5 Instrumente, unbegrenzt Lektionen",
+   "pw_save": "SPARE {save}",
+   "pw_yr": "Jährlich",
+   "pw_yr_s": "7 Tage gratis, dann {yr}/Jahr",
+   "pw_yr_m": "{yrmo}",
+   "pw_permo": "/Monat",
+   "pw_mo": "Monatlich",
+   "pw_mo_s": "Monatlich abgerechnet",
+   "pw_mo_m": "{mo}",
+   "terms": "AGB",
+   "privacy": "Datenschutz",
+   "restore": "Wiederherstellen",
+   "of_s": "Mit Premium bekommst du unbegrenzt Lektionen für ein Instrument.",
+   "of_p": "{one} / Jahr",
+   "of_pm": "{onemo} pro Monat · One-Instrument-Abo",
+   "of_b2": "Sofort-Feedback auf jeden Ton, den du spielst",
+   "of_b3": "Beliebte Songs und alle 5 Instrumente bleiben bei Premium+",
+   "of_back": "Zurück zur Premium+-Gratiswoche"
+  }
+ },
+ "prices": {
+  "de": {
+   "yr": "179,99 €",
+   "yrmo": "15,00 €",
+   "mo": "29,99 €",
+   "save": "50 %",
+   "one": "119,99 €",
+   "onemo": "10,00 €"
+  }
+ },
+ "labelsI18n": {
+  "de": {
+   "instrument": {
+    "guitar": "Gitarre",
+    "piano": "Piano",
+    "singing": "Singen",
+    "bass": "Bass",
+    "ukulele": "Ukulele"
+   },
+   "level": {
+    "first": "Neuling",
+    "beginner": "Anfänger",
+    "inter": "Mittel",
+    "adv": "Fortgeschritten"
+   },
+   "genre": {
+    "rock": "Rock",
+    "pop": "Pop",
+    "indie": "Alternative und Indie",
+    "blues": "Blues",
+    "funk": "Funk und Soul",
+    "folk": "Volksmusik",
+    "classical": "Klassik",
+    "world": "International",
+    "country": "Country & Roots",
+    "jazz": "Jazz",
+    "latin": "Latin",
+    "metal": "Metal"
+   }
+  }
+ },
+ "liveUrl": "https://eddieatadapty.github.io/yousician-flow-rebuild/",
+ "video": "assets/walkthrough.mp4",
+ "poster": "assets/walkthrough-poster.jpg",
+ "compare": {
+  "today": "today",
+  "proposed": "paywall",
+  "kicker": "The paywall, side by side",
+  "title": "Today and proposed.",
+  "sub": "The last screen before checkout today, next to the paywall we’d test.",
+  "todayCap": "rebuilt from your web sign-up, step 6 of 6",
+  "rows": [
+   {
+    "h": "Headline",
+    "idea": 1,
+    "was": "“How your free trial works”, the same for everyone",
+    "now": "“Play Rock on your guitar”, built from their own answers"
+   },
+   {
+    "h": "Proof",
+    "idea": 3,
+    "was": "None on this screen; one quote a step earlier",
+    "now": "4.6 ★ from 139K ratings and Editor’s Choice beside the plans"
+   },
+   {
+    "h": "Price",
+    "idea": 4,
+    "was": "Not shown; the next step is creating an account",
+    "now": "$13.33 a month, billed $159.99 yearly, “Save 55%” on the card"
+   },
+   {
+    "h": "On close",
+    "idea": 5,
+    "was": "Back, or leave",
+    "now": "Your One Instrument plan, $119.99 a year, for the instrument they picked"
+   }
+  ],
+  "kept": "Kept from today: your trial timeline wording and Day 7 line, the green Next button, Inter, the dark ground and the Yousician mark."
+ },
+ "tour": {
+  "segments": [
+   {
+    "id": "instrument",
+    "d": 3000,
+    "tap": [
+     ".y-in",
+     2300
+    ]
+   },
+   {
+    "id": "level",
+    "d": 1900,
+    "tap": [
+     "[data-pick=\"level:first\"]",
+     1200
+    ]
+   },
+   {
+    "id": "genre",
+    "d": 1300,
+    "st": {
+     "genre": []
+    }
+   },
+   {
+    "id": "genre",
+    "d": 1600,
+    "st": {
+     "genre": [
+      "rock"
+     ]
+    },
+    "tap": [
+     ".y-nx",
+     1100
+    ]
+   },
+   {
+    "id": "practice",
+    "d": 1900,
+    "tap": [
+     "[data-pick=\"freq:regular\"]",
+     1200
+    ]
+   },
+   {
+    "id": "payoff",
+    "d": 3200,
+    "reveal": ".y-path",
+    "tap": [
+     ".y-nx",
+     2700
+    ]
+   },
+   {
+    "id": "quickwin",
+    "d": 2100,
+    "st": {
+     "played": "0"
+    },
+    "tap": [
+     ".y-big",
+     1600
+    ]
+   },
+   {
+    "id": "quickwin",
+    "d": 2600,
+    "st": {
+     "played": "1"
+    },
+    "pop": ".y-perf",
+    "tap": [
+     ".y-nx",
+     2200
+    ]
+   },
+   {
+    "id": "trial",
+    "d": 3000,
+    "reveal": ".y-proof",
+    "tap": [
+     ".y-nx",
+     2600
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 2800,
+    "st": {
+     "plan": "year"
+    }
+   },
+   {
+    "id": "paywall",
+    "d": 1400,
+    "st": {
+     "plan": "month"
+    },
+    "tap": [
+     "[data-pick=\"plan:month\"]",
+     100
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 1300,
+    "st": {
+     "plan": "year"
+    },
+    "tap": [
+     ".y-x",
+     900
+    ]
+   },
+   {
+    "id": "offer",
+    "d": 3100
+   },
+   {
+    "id": "offer",
+    "d": 3000,
+    "end": true
+   }
+  ],
+  "captions": {
+   "instrument": {
+    "k": "Context",
+    "t": "Your web sign-up, kept",
+    "l": "Instrument, level, genres, practice days. Word for word."
+   },
+   "level": {
+    "k": "Context",
+    "t": "Level",
+    "l": "Kept as is. It comes back two screens later."
+   },
+   "genre": {
+    "k": "Context",
+    "t": "Genres",
+    "l": "What they pick becomes the paywall headline."
+   },
+   "practice": {
+    "k": "Context",
+    "t": "Practice days",
+    "l": "Kept, RECOMMENDED tag included."
+   },
+   "payoff": {
+    "n": 1,
+    "t": "Use the four answers you collect",
+    "l": "All four come back, not just the practice days.",
+    "o": "CR +10–20%",
+    "ol": "to trial start"
+   },
+   "quickwin": {
+    "n": 2,
+    "t": "Let them hear Yousician listen",
+    "l": "One note, “Perfect!”, before the price.",
+    "o": "CR +5–15%",
+    "ol": "to trial start"
+   },
+   "trial": {
+    "n": 3,
+    "t": "Proof where people decide",
+    "l": "Editor’s Choice and 4.6 ★ under your own timeline.",
+    "o": "CR +5–10%",
+    "ol": "to trial start"
+   },
+   "paywall": {
+    "n": 4,
+    "t": "Make the yearly saving impossible to miss",
+    "l": "$13.33 a month, Save 55%, preselected.",
+    "o": "ARPU +10–15%",
+    "ol": "from annual mix"
+   },
+   "offer": {
+    "n": 5,
+    "t": "Catch the people who close it",
+    "l": "Your One Instrument plan, $119.99 a year.",
+    "o": "ARPU +10–15%",
+    "ol": "from people who said no"
+   }
+  },
+  "introLede": "Five ideas to turn more new players into subscribers, built into your own sign-up.",
+  "endTitle": "Five ideas, built into your own sign-up."
+ },
+ "grounding": "Impact ranges are Adapty’s expected effect from teardowns and A/B tests across 30,000+ subscription apps, not measured lift for Yousician. They overlap, so they don’t add up.",
+ "sources": [
+  {
+   "group": "Prices",
+   "items": [
+    {
+     "dt": "$159.99 a year · $29.99 a month",
+     "dd": "Premium Plus: Yearly Plan and Premium Plus: Monthly Plan, In-App Purchases on your <a href=\"https://apps.apple.com/us/app/yousician-learn-play-guitar/id959883039\" target=\"_blank\" rel=\"noopener\">US App Store listing</a>, October 2026. Several yearly SKUs share a name; we used the lowest."
+    },
+    {
+     "dt": "$119.99 a year",
+     "dd": "One Instrument Yearly Plan, same listing. Plan scope (one instrument, unlimited lessons, no popular songs) from your Help Center article “Premium membership options in Yousician”."
+    },
+    {
+     "dt": "$13.33 a month · Save 55% · $10.00 a month",
+     "dd": "Our maths: $159.99 ÷ 12; 1 − $159.99 ÷ (12 × $29.99); $119.99 ÷ 12."
+    },
+    {
+     "dt": "179,99 € · 29,99 € · 119,99 €",
+     "dd": "Same SKUs on your <a href=\"https://apps.apple.com/de/app/yousician-learn-play-guitar/id959883039\" target=\"_blank\" rel=\"noopener\">German App Store listing</a>. 15,00 € a month and Save 50 % are our maths."
+    },
+    {
+     "dt": "7 days free",
+     "dd": "yousician.com (“Try our Premium+ plan free for 7 days”) and your web sign-up step 6 (“DAY 7 Your account is charged”). We show it on the yearly plan only."
+    },
+    {
+     "dt": "Not used",
+     "dd": "$179.99 (Premium Plus: Yearly Plan, Premium+ Yearly plan), $59.99 Premium Plus 3 Months, $19.99 One Instrument Monthly Plan, $119.99 Yousician Subscription Free Trial: listed SKUs we could not place on a live paywall."
+    }
+   ]
+  },
+  {
+   "group": "Proof",
+   "items": [
+    {
+     "dt": "4.6 ★ · 139K ratings",
+     "dd": "<a href=\"https://apps.apple.com/us/app/yousician-learn-play-guitar/id959883039\" target=\"_blank\" rel=\"noopener\">US App Store listing</a> (4.6 from 138,859 ratings). German version: 4,6 from 14.036 ratings on the German listing."
+    },
+    {
+     "dt": "App Store Editor’s Choice",
+     "dd": "Your first App Store screenshot; the laurel is cropped from it."
+    },
+    {
+     "dt": "New York Times quote",
+     "dd": "“What people say” in your App Store description."
+    },
+    {
+     "dt": "Rob A. quote",
+     "dd": "Your web sign-up, step 5, English and German, word for word."
+    }
+   ]
+  },
+  {
+   "group": "Features and copy",
+   "items": [
+    {
+     "dt": "Steps 1–6",
+     "dd": "Walked on <a href=\"https://account.yousician.com/signup/instrument\" target=\"_blank\" rel=\"noopener\">account.yousician.com/signup</a> in English and German on 19 October 2026, up to account creation (no account made). Copy kept word for word, with one German typo fixed (“spielen oder spielen”)."
+    },
+    {
+     "dt": "First note screen",
+     "dd": "Your App Store screenshots 1–3 (“Perfect!”, “Instant feedback”, “Play it on your guitar”, the Mic meter) and yousician.com (“listens to you play and gives instant feedback”). New screen, built from those."
+    },
+    {
+     "dt": "New lines",
+     "dd": "The path card, the first-note screen, the paywall and the close offer are our copy. The German for those lines is our translation."
+    }
+   ]
+  },
+  {
+   "group": "Design",
+   "items": [
+    {
+     "dt": "Colours and type",
+     "dd": "yousician.com CSS tokens (main green, grey 900, green ink, main yellow, main purple) and colours sampled from your sign-up. Inter, as on your site and sign-up."
+    },
+    {
+     "dt": "Imagery",
+     "dd": "Instrument and genre photos from your web sign-up; Yousician mark from yousician.com; Editor’s Choice laurel cropped from your App Store screenshot 1. The note highway is redrawn in CSS from your App Store screenshots."
+    }
+   ]
+  },
+  {
+   "group": "What we couldn’t see",
+   "items": [
+    {
+     "dt": "Your iOS flow and paywall",
+     "dd": "We didn’t install and sign up in the app, so the prototype starts from your web sign-up. Your iOS paywall may already do some of this."
+    },
+    {
+     "dt": "Checkout on the web",
+     "dd": "It sits behind account creation, which we didn’t do."
+    },
+    {
+     "dt": "Trial per plan",
+     "dd": "Which iOS plans carry the 7-day trial. We show it on yearly only."
+    },
+    {
+     "dt": "Test history",
+     "dd": "If you’ve run any of these, tell us and we’ll go deeper on the rest."
+    }
+   ]
+  }
+ ]
+}
+</script>
+
+<script>
+/* per-app hooks go here: window.onSync = function(S){…}; window.onEnter = function(id, S){…}; window.onLang = function(lang){…};
+   Globals available: S (S.lang = current language), C, cur, ORDER, scr, go(), back(), jump(), sync(), setLang(), fillP(str, lang),
+   SHOT (screenshot/tour run), HERO (hero-still run). Per-language dynamic text: read S.lang in onSync. */
+/* Yousician hooks: everything that is composed from the answers, per language */
+var YIMG = {guitar: 'assets/site/guitar.png', piano: 'assets/site/piano.png', singing: 'assets/site/voice.png', bass: 'assets/site/bass.png', ukulele: 'assets/site/ukulele.png'};
+var YGEN = {rock: 'assets/site/rock.png', pop: 'assets/site/pop.png', indie: 'assets/site/indie.png', blues: 'assets/site/blues.png', funk: 'assets/site/funk.png', folk: 'assets/site/folk.png', classical: 'assets/site/classical.png', world: 'assets/site/world.png', country: 'assets/site/country.png', jazz: 'assets/site/jazz.png', latin: 'assets/site/latin.png', metal: 'assets/site/metal.png'};
+var YT = {
+  en: {
+    play: {guitar: 'Play {g} on your guitar', bass: 'Play {g} on your bass', ukulele: 'Play {g} on your ukulele', piano: 'Play {g} on the piano', singing: 'Sing {g} with Yousician'},
+    sub: {guitar: 'Play it on your guitar', bass: 'Play it on your bass', ukulele: 'Play it on your ukulele', piano: 'Play it on your piano', singing: 'Sing it'},
+    inst: {guitar: 'guitar', bass: 'bass', ukulele: 'ukulele', piano: 'piano', singing: 'singing'},
+    only: 'Only want to learn {i}?', unl: 'Unlimited {i} lessons', getp: 'Get Premium for {i}',
+    songs: 'Your {g} songs, from the full song library',
+    regular: "By practicing 3 days a week you'll level up in 1 week!", other: 'We’ll fit your path around {f}.',
+    freq: {casual: '1–2 days a week', regular: '3 days a week', unstoppable: '4+ days a week', unsure: 'Your own pace'},
+    and: ' & ', ctaY: 'Start my free week', ctaM: 'Continue with Monthly',
+    termsY: 'Free for 7 days, then $159.99 a year. Cancel before day 7.', termsM: '$29.99 a month. Cancel anytime.'
+  },
+  de: {
+    play: {guitar: 'Spiel {g} auf deiner Gitarre', bass: 'Spiel {g} auf deinem Bass', ukulele: 'Spiel {g} auf deiner Ukulele', piano: 'Spiel {g} am Piano', singing: 'Sing {g} mit Yousician'},
+    sub: {guitar: 'Spiel ihn auf deiner Gitarre', bass: 'Spiel ihn auf deinem Bass', ukulele: 'Spiel ihn auf deiner Ukulele', piano: 'Spiel ihn auf dem Piano', singing: 'Sing ihn'},
+    inst: {guitar: 'Gitarre', bass: 'Bass', ukulele: 'Ukulele', piano: 'Piano', singing: 'Singen'},
+    only: 'Nur {i} lernen?', unl: 'Unbegrenzt Lektionen für {i}', getp: 'Premium für {i} holen',
+    songs: 'Deine {g}-Songs aus der ganzen Song-Bibliothek',
+    regular: 'Wenn du 3 Tage pro Woche übst, machst du innerhalb 1 Woche Fortschritte!', other: 'Wir bauen deinen Pfad um {f}.',
+    freq: {casual: '1–2 Tage pro Woche', regular: '3 Tage pro Woche', unstoppable: '4+ Tage pro Woche', unsure: 'Dein eigenes Tempo'},
+    and: ' & ', ctaY: 'Gratiswoche starten', ctaM: 'Weiter mit Monatlich',
+    termsY: '7 Tage gratis, danach 179,99 € pro Jahr. Vor Tag 7 kündbar.', termsM: '29,99 € pro Monat. Jederzeit kündbar.'
+  }
+};
+function yq(sel){ return document.querySelectorAll('.phone ' + sel); }
+function yset(sel, html){ yq(sel).forEach(function(e){ e.innerHTML = html; }); }
+window.onSync = function(S){
+  var L = YT[S.lang] || YT.en, ins = S.instrument || 'guitar';
+  var gs = (S.genre || []).slice(0, 2).map(function(g){ return (C.labels.genre || {})[g] || g; });
+  var g = gs.join(L.and) || (C.labels.genre || {}).rock;
+  var iname = L.inst[ins], cap = iname.charAt(0).toUpperCase() + iname.slice(1);
+  yq('.js-ins-img').forEach(function(e){ e.src = YIMG[ins]; });
+  var gl = (S.genre || []).length ? S.genre : ['rock'], g2 = gl[1] || (gl[0] === 'pop' ? 'rock' : 'pop');
+  yq('.js-gen-1').forEach(function(e){ e.src = YGEN[gl[0]]; });
+  yq('.js-gen-2').forEach(function(e){ e.src = YGEN[g2]; });
+  yset('.js-po-sub', S.freq === 'regular' ? L.regular : L.other.replace('{f}', L.freq[S.freq] || L.freq.regular));
+  yset('.js-po-t', ((C.labels.instrument || {})[ins] || cap) + ' · ' + ((C.labels.level || {})[S.level] || ''));
+  yset('.js-po-tags', (S.genre || []).slice(0, 3).map(function(x){ return '<span>' + ((C.labels.genre || {})[x] || x) + '</span>'; }).join('') + '<span>' + (L.freq[S.freq] || '') + '</span>');
+  yset('.js-qw-sub', L.sub[ins]);
+  yset('.js-pw-h', L.play[ins].replace('{g}', '<span class="y-g">' + g + '</span>'));
+  yset('.js-pw-b1', L.songs.replace('{g}', g));
+  yset('.js-pw-cta', S.plan === 'month' ? L.ctaM : L.ctaY);
+  yset('.js-pw-terms', S.plan === 'month' ? L.termsM : L.termsY);
+  yset('.js-of-h', L.only.replace('{i}', iname));
+  yset('.js-of-b1', L.unl.replace('{i}', iname));
+  yset('.js-of-cta', L.getp.replace('{i}', iname));
+};
+/* the quick win starts fresh every time it is entered; the hero still shows it finished */
+window.onEnter = function(id, S){
+  if (id === 'quickwin' && !SHOT) { S.played = '0'; sync(); }
+  if (id === 'quickwin' && HERO) { S.played = '1'; sync(); }
+};
+</script>
+<script>
+/* ============ engine — generic, do not fork per app ============ */
+var C = JSON.parse(document.getElementById('content').textContent);
+var S = C.state, scr = {}, ORDER = [], hist = [], cur = null, Q = location.search;
+var SHOT = /[?&](shot|phone|tour)\b/.test(Q), HERO = /[?&]hero\b/.test(Q);
+/* a screen with data-aside (e.g. the paywall TODAY for the side-by-side) renders for stills but is not part of the flow */
+document.querySelectorAll('.scr').forEach(function(s){ scr[s.dataset.id] = s; if (!s.hasAttribute('data-aside')) ORDER.push(s.dataset.id); });
+if (/[?&]shot\b/.test(Q)) document.documentElement.classList.add('shot');
+if (/[?&]phone\b/.test(Q)) document.documentElement.classList.add('shot', 'phoneonly');
+if (/[?&]clear\b/.test(Q)) document.documentElement.classList.add('clear');
+var IDEAS = (C.ideas || []).length;
+
+/* ---- languages: markup is the first language; C.i18n[lang][data-t key] the others; {tokens} from C.prices[lang] ---- */
+var LANGS = C.langs || [], BASE = LANGS.length ? LANGS[0].code : 'en', LANG_DONE = BASE, BASE_LABELS = JSON.parse(JSON.stringify(C.labels || {}));
+if (!S.lang) S.lang = BASE;
+function fillP(s, l){ var P = (C.prices || {})[l] || {}; return String(s).replace(/\{(\w+)\}/g, function(m, k){ return k in P ? P[k] : m; }); }
+function applyLang(){
+  var l = S.lang || BASE; if (l === LANG_DONE) return;
+  var T = (C.i18n || {})[l] || {};
+  document.querySelectorAll('.phone [data-t]').forEach(function(el){
+    if (el._base == null) el._base = el.innerHTML;
+    el.innerHTML = l === BASE || T[el.dataset.t] == null ? el._base : fillP(T[el.dataset.t], l);
+  });
+  C.labels = JSON.parse(JSON.stringify(BASE_LABELS));
+  var LL = (C.labelsI18n || {})[l] || {}; Object.keys(LL).forEach(function(k){ C.labels[k] = LL[k]; });
+  LANG_DONE = l;
+}
+function setLang(l){
+  if (!LANGS.some(function(x){ return x.code === l; })) return;
+  S.lang = l; sync();
+  document.querySelectorAll('[data-setlang]').forEach(function(b){ b.classList.toggle('on', b.dataset.setlang === l); });
+  if (window.onLang) window.onLang(l);
+}
+
+function lab(key){ var v = S[key]; var L = C.labels[key]; if (Array.isArray(v)) return v.map(function(x){ return L && L[x] || x; }).join(', '); return (L && L[v]) || v; }
+function sync(){
+  applyLang();
+  document.querySelectorAll('[data-bind]').forEach(function(el){
+    var b = el.dataset.bind, m = b.split(':');
+    el.textContent = m[0] === 'label' ? lab(m[1]) : m[0] === 'count' ? (S[m[1]] || []).length : (S[b] == null ? '' : S[b]);
+  });
+  document.querySelectorAll('[data-pick]').forEach(function(el){ var p = el.dataset.pick.split(':'); el.classList.toggle('on', S[p[0]] === p[1]); });
+  document.querySelectorAll('[data-toggle]').forEach(function(el){ var p = el.dataset.toggle.split(':'); el.classList.toggle('on', (S[p[0]] || []).indexOf(p[1]) > -1); });
+  document.querySelectorAll('[data-requires]').forEach(function(el){ el.disabled = !(S[el.dataset.requires] || []).length; });
+  document.querySelectorAll('[data-show]').forEach(function(el){ var p = el.dataset.show.split(':'); el.style.display = String(S[p[0]]) === p[1] ? '' : 'none'; });
+  if (window.onSync) window.onSync(S);
+}
+function show(id, dir){
+  var from = scr[cur], to = scr[id]; if (!to || id === cur) return;
+  var sheet = to.classList.contains('sheet');
+  if (from){
+    from.classList.remove('is-active');
+    if (sheet) from.classList.add('under');                                   /* a sheet slides up over the screen that opened it */
+    else if (dir === 'fwd' && !from.classList.contains('sheet')) from.classList.add('is-past');
+  }
+  if (!sheet) Object.keys(scr).forEach(function(k){ var u = scr[k]; if (u !== to && u.classList.contains('under')) { u.classList.remove('under'); if (dir === 'fwd') u.classList.add('is-past'); } });
+  to.classList.remove('is-past', 'under'); to.classList.add('is-active'); cur = id;
+  paint(); if (window.onEnter) window.onEnter(id, S);
+}
+function go(id){ if (cur) hist.push(cur); show(id, 'fwd'); }
+function back(){ if (hist.length) { var p = hist.pop(); scr[cur].classList.remove('is-active'); show(p, 'back'); } }
+function jump(id){
+  Object.keys(scr).forEach(function(k){ scr[k].classList.add('nofx'); scr[k].classList.remove('is-active', 'is-past', 'under'); });
+  var i = ORDER.indexOf(id); hist = ORDER.slice(0, i < 0 ? 0 : i); cur = null;
+  ORDER.slice(0, i).forEach(function(k){ if (!scr[k].classList.contains('sheet')) scr[k].classList.add('is-past'); });
+  if (scr[id] && scr[id].classList.contains('sheet')) {                        /* jumping to a sheet: its opener stays visible under it */
+    for (var j = i - 1; j >= 0; j--) if (!scr[ORDER[j]].classList.contains('sheet')) { scr[ORDER[j]].classList.remove('is-past'); scr[ORDER[j]].classList.add('under'); break; }
+  }
+  show(id, 'jump');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ Object.keys(scr).forEach(function(k){ scr[k].classList.remove('nofx'); }); }); });
+}
+function stepBy(d){ var i = ORDER.indexOf(cur) + d; if (i >= 0 && i < ORDER.length) jump(ORDER[i]); }
+function jumpTo(id){
+  var p = document.getElementById('prototype');
+  if (p && !document.documentElement.classList.contains('appmode')) p.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+  jump(id);
+}
+function paint(){
+  sync();
+  var c = document.getElementById('chips');
+  if (!c.childElementCount) ORDER.forEach(function(id){
+    var p = C.panel[id] || {}, b = document.createElement('button');
+    b.className = 'au-chip'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'tab');
+    b.innerHTML = (p.idea ? '<i>' + p.idea + '</i>' : '') + ((C.chips && C.chips[id]) || id);
+    b.onclick = function(){ jump(id); };
+    c.appendChild(b);
+  });
+  c.querySelectorAll('.au-chip').forEach(function(b){ var on = b.dataset.id === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  var d = C.panel[cur] || {t: cur, why: ''}, n = ORDER.indexOf(cur) + 1;
+  document.getElementById('panel').innerHTML =
+    (d.idea ? '<div class="au-pn-k"><i></i>Idea ' + d.idea + ' of ' + IDEAS + '</div>' : '<div class="au-pn-k au-ctx"><i></i>Context</div>') +
+    '<h3 class="au-pn-t">' + d.t + '</h3><p class="au-pn-h">' + d.why + '</p>' +
+    (d.iv ? '<div class="au-pn-o"><div class="au-lab">Potential outcome · based on Adapty data</div><div class="au-val"><mark>' + d.iv + '</mark></div><div class="au-sub">' + (d.il || '') + '</div></div>' : '') +
+    (d.also ? '<p class="au-pn-a">' + d.also + '</p>' : '') +
+    '<div class="au-pn-nav"><button type="button" onclick="stepBy(-1)"' + (n <= 1 ? ' disabled' : '') + '>‹ Previous</button><span>Screen ' + n + ' of ' + ORDER.length + '</span><button type="button" onclick="stepBy(1)"' + (n === ORDER.length ? ' disabled' : '') + '>Next ›</button></div>';
+  var ab = document.getElementById('abT'); if (ab) ab.textContent = (d.idea ? 'Idea ' + d.idea + ' of ' + IDEAS + ' · ' : '') + (d.t || '');
+}
+document.addEventListener('click', function(e){
+  var j = e.target.closest('[data-jumpto]'); if (j){ e.preventDefault(); jumpTo(j.dataset.jumpto); return; }
+  var L = e.target.closest('[data-setlang]'); if (L){ setLang(L.dataset.setlang); return; }
+  if (e.target.closest('[data-langtoggle]') && LANGS.length > 1){ var k = LANGS.findIndex(function(x){ return x.code === S.lang; }); setLang(LANGS[(k + 1) % LANGS.length].code); return; }
+  var el = e.target.closest('[data-go],[data-back],[data-pick],[data-toggle]'); if (!el) return;
+  if (el.dataset.pick){ var p = el.dataset.pick.split(':'); S[p[0]] = p[1]; sync(); if (el.dataset.advance) setTimeout(function(){ go(el.dataset.advance); }, 170); return; }
+  if (el.dataset.toggle){ var q = el.dataset.toggle.split(':'), a = S[q[0]] = S[q[0]] || [], i = a.indexOf(q[1]); if (i > -1) a.splice(i, 1); else a.push(q[1]); sync(); return; }
+  if ('back' in el.dataset) return back();
+  go(el.dataset.go);
+});
+document.querySelectorAll('[data-input]').forEach(function(inp){
+  inp.value = S[inp.dataset.input] || ''; inp.addEventListener('input', function(){ S[inp.dataset.input] = inp.value.trim() || 'there'; sync(); });
+});
+function $(id){ return document.getElementById(id); }
+
+/* hero stills, shortlist, outcome, sources — from CONTENT */
+$('heroPhones').innerHTML = (C.hero || []).map(function(id, i){
+  var pos = ['l', 'c', 'r'][i] || 'r', t = (C.chips && C.chips[id]) || id;
+  return '<button class="au-hp au-' + pos + '" data-jumpto="' + id + '" aria-label="Open ' + t + '"><img src="assets/hero/' + id + '.png" alt=""></button>';
+}).join('');
+$('ideaList').innerHTML = (C.ideas || []).map(function(r, i){
+  return '<article class="au-idea"><div class="au-num">0' + (i + 1) + '</div><div><h3>' + r.title + '</h3><p>' + r.what + '</p>' +
+    '<button type="button" class="au-lnk" data-jumpto="' + r.screen + '">See it on the screen</button></div>' +
+    '<div class="au-imp"><div class="au-v"><mark>' + r.impact + '</mark></div><div class="au-l">' + r.il + '</div></div></article>';
+}).join('');
+var O = C.outcome || {};
+$('bandNums').innerHTML =
+  (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') +
+  (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '');
+$('bandFn').textContent = C.grounding;
+$('fine').textContent = C.grounding + ' Prepared by Adapty.';
+$('srcBody').innerHTML = C.sources.map(function(g){
+  return '<div><h4>' + g.group + '</h4><dl>' + g.items.map(function(it){ return '<dt>' + it.dt + '</dt><dd>' + it.dd + '</dd>'; }).join('') + '</dl></div>';
+}).join('');
+function openSrc(){ var d = $('srcDetails'); d.open = true; d.scrollIntoView({block: 'start'}); }
+
+/* ---- extras: language control, the paywall side by side, QR / phone view, the video ---- */
+if (LANGS.length > 1) {
+  $('langRow').hidden = false;
+  var lb = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.name + '</button>'; }).join('');
+  $('langSw').innerHTML = lb;
+  $('abLang').innerHTML = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.code.toUpperCase() + '</button>'; }).join('');
+}
+var CM = C.compare;
+if (CM && scr[CM.today] && scr[CM.proposed]) {
+  $('compare').hidden = false; $('navCompare').hidden = false;
+  $('cmpBody').innerHTML = '<div class="au-ideas-h"><p class="au-kicker">' + (CM.kicker || 'The paywall, side by side') + '</p><h2 class="au-h2">' + (CM.title || 'Today and proposed.') + (CM.sub ? ' <span>' + CM.sub + '</span>' : '') + '</h2></div>' +
+    '<div class="au-cmp"><figure><img src="assets/hero/' + CM.today + '.png" alt="Your paywall today"><figcaption>Today <span>· ' + (CM.todayCap || 'rebuilt from your recording') + '</span></figcaption></figure>' +
+    '<ol class="au-chg">' + (CM.rows || []).map(function(r){
+      return '<li><h4>' + r.h + (r.idea ? ' <i>Idea ' + r.idea + '</i>' : '') + '</h4><span class="au-was"><em>Today</em>' + r.was + '</span><span class="au-now"><em>Proposed</em>' + r.now + '</span></li>';
+    }).join('') + '</ol>' +
+    '<figure><button type="button" class="au-cmp-go" data-jumpto="' + CM.proposed + '" aria-label="Open the proposed paywall"><img src="assets/hero/' + CM.proposed + '.png" alt="The proposed paywall"></button><figcaption>Proposed <span>· tap to try it</span></figcaption></figure></div>' +
+    (CM.kept ? '<p class="au-kept">' + CM.kept + '</p>' : '');
+}
+if (C.liveUrl) { $('qrCard').hidden = false; $('qrMob').hidden = false; }
+if (/[?&]app\b/.test(Q)) {
+  var H0 = document.documentElement; H0.classList.add('appmode');
+  var openP = function(o){ H0.classList.toggle('au-open', o); $('abWhy').querySelector('em').textContent = o ? 'Close ↓' : 'Why ↑'; };
+  $('abWhy').onclick = function(){ openP(!H0.classList.contains('au-open')); };
+  $('abScrim').onclick = function(){ openP(false); };
+}
+if (C.video) {
+  var dlg = $('vid'), vel = $('vidEl'); vel.src = C.video; if (C.poster) vel.poster = C.poster; $('vidDl').href = C.video;
+  $('heroVideo').hidden = false;
+  $('heroVideo').onclick = function(){ dlg.showModal(); vel.play().catch(function(){}); };
+  $('vidX').onclick = function(){ dlg.close(); };
+  dlg.addEventListener('close', function(){ vel.pause(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+}
+
+/* ---- ?tour: a deterministic walkthrough from C.tour — tourAt(ms) paints one frame; record-video.sh records it ---- */
+function tourInit(){
+  var T = C.tour, H = document.documentElement, TR = T.transition || 360;
+  H.classList.add('tourmode', 'shot'); document.body.classList.add('nofx');
+  var SEG = T.segments, START = [], STATE = [], UNDER = [], acc = 0, st = JSON.parse(JSON.stringify(C.state));
+  SEG.forEach(function(s, i){
+    START.push(acc); acc += s.d;
+    Object.keys(s.st || {}).forEach(function(k){ st[k] = s.st[k]; }); STATE.push(JSON.parse(JSON.stringify(st)));
+    var u = null; if (scr[s.id].classList.contains('sheet')) for (var j = i - 1; j >= 0; j--) if (!scr[SEG[j].id].classList.contains('sheet')) { u = SEG[j].id; break; }
+    UNDER.push(u);
+  });
+  var TOTAL = acc, capEl = $('tCap'), tap = $('tTap'), pressed = null, popped = [];
+  $('tIntro').innerHTML = '<p class="au-eyebrow"><i></i>' + document.querySelector('.au-top-hero .au-eyebrow').textContent + '</p><h1 class="au-display">' + C.app + '</h1>' +
+    '<p class="au-lede">' + (T.introLede || document.querySelector('.au-top-hero .au-lede').innerHTML) + '</p>';
+  $('tEnd').innerHTML = '<p class="au-eyebrow"><i></i>Growth Audit · ' + C.app + '</p><h2 class="au-te-h">' + (T.endTitle || 'Five ideas, built into your own onboarding.') + '</h2>' +
+    '<div class="au-te-n">' + (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') + (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '') + '</div>' +
+    (C.liveUrl ? '<div class="au-te-q"><img src="assets/qr-app.png" alt=""><div><b>Try it on your phone</b><span>' + C.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') + '</span></div></div>' : '') +
+    '<p class="au-te-f">' + C.grounding + '</p>';
+  function ease(x){ return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+  function easeBack(x){ var c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }
+  function capHTML(c){
+    c = c || {k: '', t: '', l: ''};
+    return '<div class="au-tk' + (c.n ? '' : ' au-ctx') + '"><i></i>' + (c.n ? 'Idea ' + c.n + ' of ' + IDEAS : (c.k || 'Context')) + '</div><h2 class="au-tt">' + c.t + '</h2><p class="au-tl">' + (c.l || '') + '</p>' +
+      (c.o ? '<div class="au-to"><small>Potential outcome · based on Adapty data</small><b><mark>' + c.o + '</mark></b><span>' + (c.ol || '') + '</span></div>' : '');
+  }
+  function place(id, tf, z){ scr[id].style.transform = tf; scr[id].style.zIndex = z; }
+  window.TOUR_MS = TOTAL;
+  window.tourAt = function(ms){
+    ms = Math.max(0, Math.min(TOTAL - 1, ms));
+    var i = 0; while (i < SEG.length - 1 && ms >= START[i + 1]) i++;
+    var s = SEG[i], local = ms - START[i], prev = i > 0 ? SEG[i - 1] : null;
+    Object.keys(STATE[i]).forEach(function(k){ S[k] = STATE[i][k]; }); sync();
+    var moving = prev && prev.id !== s.id && local < TR, p = moving ? ease(local / TR) : 1;
+    Object.keys(scr).forEach(function(k){ scr[k].classList.remove('is-active', 'is-past', 'under'); place(k, 'translateX(100%)', 0); });
+    var B = scr[s.id];
+    if (moving) {
+      if (B.classList.contains('sheet')) { place(prev.id, 'none', 1); B.style.transform = 'translateY(' + (1 - p) * 100 + '%)'; }
+      else {
+        var slide = 'translateX(' + (-28 * p) + '%)'; place(prev.id, slide, 1); B.style.transform = 'translateX(' + (1 - p) * 100 + '%)';
+        if (UNDER[i - 1]) place(UNDER[i - 1], slide, 0);
+      }
+    } else B.style.transform = 'none';
+    B.style.zIndex = 2;
+    if (UNDER[i] && !moving) place(UNDER[i], 'none', 1);
+    /* optional reveal: s.pop scales an element in, s.reveal fades one in a beat later */
+    popped.forEach(function(e){ e.style.transform = ''; e.style.opacity = ''; }); popped = [];
+    var q = Math.max(0, Math.min(1, (local - 250) / 550));
+    if (s.pop) { var pe = B.querySelector(s.pop); if (pe) { pe.style.transform = 'scale(' + (.55 + .45 * easeBack(q)) + ')'; pe.style.opacity = Math.min(1, q * 1.6); popped.push(pe); } }
+    if (s.reveal) { var re = B.querySelector(s.reveal); if (re) { re.style.opacity = Math.max(0, Math.min(1, (local - 520) / 300)); popped.push(re); } }
+    /* caption crossfades at screen changes; waits for the intro, gives way to the end card */
+    var key = s.id, op = 1;
+    if (moving) { if (p < .5) { key = prev.id; op = 1 - p * 2; } else op = p * 2 - 1; }
+    if (capEl.dataset.k !== key) { capEl.innerHTML = capHTML(T.captions[key]); capEl.dataset.k = key; }
+    var io = ms < 1100 ? 1 : Math.max(0, 1 - (ms - 1100) / 300), eo = s.end ? Math.min(1, local / 350) : 0;
+    capEl.style.opacity = op * Math.max(0, Math.min(1, (ms - 1400) / 300)) * (1 - eo);
+    /* the finger: fades in, taps, ripples out. Selectors are scoped to the screen */
+    tap.style.opacity = 0; if (pressed) { pressed.style.opacity = ''; pressed = null; }
+    if (s.tap) {
+      var el = B.querySelector(s.tap[0]), dt = local - s.tap[1];
+      if (el && dt > -260 && dt < 420) {
+        var r = el.getBoundingClientRect();
+        tap.style.left = (r.left + r.width / 2) + 'px'; tap.style.top = (r.top + r.height / 2) + 'px';
+        if (dt < 0) { tap.style.opacity = (dt + 260) / 260 * .9; tap.style.transform = 'scale(1)'; }
+        else { tap.style.opacity = .9 * (1 - dt / 420); tap.style.transform = 'scale(' + (1 + dt / 420 * .9) + ')'; }
+        if (dt >= 0 && dt < 160) { el.style.opacity = .72; pressed = el; }
+      }
+    }
+    $('tIntro').style.opacity = T.intro === false ? 0 : io;
+    $('tEnd').style.opacity = eo;
+    $('tProg').style.width = (ms / TOTAL * 100) + '%';
+    cur = s.id;
+    return i;
+  };
+  var tm = /[?&]t=(\d+)/.exec(Q); tourAt(tm ? +tm[1] : 0);
+}
+
+/* boot: #<screen-id> deep-links a screen (shoot.sh / hero-stills.sh use it); ?lang=xx picks the language */
+(function(){
+  var lm = /[?&]lang=(\w+)/.exec(Q); if (lm) setLang(lm[1]); else setLang(S.lang);
+  var h = location.hash.slice(1);
+  jump(scr[h] ? h : ORDER[0]);
+  if (scr[h] && !SHOT && !document.documentElement.classList.contains('appmode')) setTimeout(function(){ $('prototype').scrollIntoView(); }, 0);
+  if (/[?&]tour\b/.test(Q) && C.tour) tourInit();
+})();
+</script>
+</body>
+</html>
