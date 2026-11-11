@@ -6,7 +6,7 @@ Five ideas to turn more Yousician users into subscribers, each built into a clic
 
 | # | Idea | Potential outcome |
 | :-- | :-- | :-- |
-| 01 | Use the four answers you already collect | +10–20% CR to trial start |
+| 01 | Use the answers you collect, and what the ad already said | +10–20% CR to trial start |
 | 02 | Let people hear Yousician listen before the price | +5–15% CR to trial start |
 | 03 | Put your proof where people decide | +5–10% CR to trial start |
 | 04 | Make the yearly saving impossible to miss | +10–15% ARPU, from annual mix |
